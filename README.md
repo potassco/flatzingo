@@ -1,4 +1,4 @@
-# flatzingo
+# :flamingo: flatzingo
 
 A flatzinc frontend for clingcon 
 
