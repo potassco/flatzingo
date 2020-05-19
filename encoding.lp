@@ -1,98 +1,3 @@
-%%% https://www.minizinc.org/doc-2.4.3/en/lib-flatzinc.html#integer-flatzinc-builtins
-%%% we nned to ask questions whether half reification is supported, as this would half the constraints and is usually the case, or check if we can detect them
-
-%%% no supported basic constructs
-unsupported(array_int_element).
-unsupported(array_int_maximum).
-unsupported(array_int_minimum).
-unsupported(array_var_int_element).
-unsupported(int_abs).
-unsupported(int_div).
-unsupported(int_max).
-unsupported(int_min).
-unsupported(int_mod).
-unsupported(int_pow).
-unsupported(int_pow_fixed).
-unsupported(int_times).
-unsupported(array_bool_element). % unsure about syntax
-unsuported(array_bool_xor). % would need some translation
-unsupported(array_var_bool_element). % theory of arrays ?
-unsupported(array_set_element).
-unsupported(array_var_set_element).
-unsupported(set_card).
-unsupported(set_diff).
-unsupported(set_eq).
-unsupported(set_eq_reif).
-unsupported(set_in).
-unsupported(set_in_reif).
-unsupported(set_intersect).
-unsupported(set_le).
-unsupported(set_le_reif).
-unsupported(set_lt).
-unsupported(set_lt_reif).
-unsupported(set_ne).
-unsupported(set_ne_reif).
-unsupported(set_subset).
-unsupported(set_subset_reif).
-unsupported(set_superset).
-unsupported(set_symdiff).
-unsupported(set_union).
-unsupported(array_float_element).
-unsupported(array_float_maximum).
-unsupported(array_float_minimum).
-unsupported(array_var_float_element).
-unsupported(float_abs).
-unsupported(float_acos).
-unsupported(float_acosh).
-unsupported(float_asin).
-unsupported(float_asinh).
-unsupported(float_atan).
-unsupported(float_atanh).
-unsupported(float_cos).
-unsupported(float_cosh).
-unsupported(float_div).
-unsupported(float_dom).
-unsupported(float_eq).
-unsupported(float_eq_reif).
-unsupported(float_exp).
-unsupported(float_in).
-unsupported(float_in_reif).
-unsupported(float_le).
-unsupported(float_le_reif).
-unsupported(float_lin_eq).
-unsupported(float_lin_eq_reif).
-unsupported(float_lin_le).
-unsupported(float_lin_le_reif).
-unsupported(float_lin_lt).
-unsupported(float_lin_lt_reif).
-unsupported(float_lin_ne).
-unsupported(float_lin_ne_reif).
-unsupported(float_ln).
-unsupported(float_log10).
-unsupported(float_log2).
-unsupported(float_lt).
-unsupported(float_lt_reif).
-unsupported(float_max).
-unsupported(float_min).
-unsupported(float_ne).
-unsupported(float_ne_reif).
-unsupported(float_plus).
-unsupported(float_pow).
-unsupported(float_sin).
-unsupported(float_sinh).
-unsupported(float_sqrt).
-unsupported(float_tan).
-unsupported(float_tanh).
-unsupported(float_times).
-unsupported(int2float).
-unsupported(array_float_maximum).
-unsupported(array_float_minimum).
-unsupported(array_var_bool_element_nonshifted).
-unsupported(array_var_int_element_nonshifted).
-unsupported(array_var_set_element_nonshifted).
-
-fail(X) :- constraint(C,X), unsupported(X).
-
 %%% TODO: parameters can occur wherever variables can, but not wise versa
 %%%convert((Name,X)parameter(array(N,_),Name).
 array_expected("int_lin_eq",(0;1)).
@@ -107,9 +12,6 @@ array_expected("bool_clause",(0;1)).
 array_expected("bool_lin_eq",(0;1)).
 array_expected("bool_lin_le",(0;1)).
 array_expected("bool_clause_reif",(0;1)).
-
-
-
 
 in(C,I,array) :- in_constraint(C,I,array).
 in(C,I,X,V)   :- in_constraint(C,I,X,V).
@@ -266,7 +168,7 @@ var(true).
    in(C, 2, BV), 
    &sum { X } != Y,
    not var(BV).
-:- constraint(C, "int_lt_reif"),
+:- constraint(C, "int_ne_reif"),
    in(C, 0, X),
    in(C, 1, Y),
    in(C, 2, BV), 
