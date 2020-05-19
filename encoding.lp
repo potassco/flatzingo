@@ -524,3 +524,5 @@ var(B):- constraint(C, "bool_lt"),
    not var(BV), in(C, 1, I, BV),
    not var(B).
 
+&minimize {V : solve(minimize, V)}.
+&minimize {-V : solve(maximize, V)}.
