@@ -24,7 +24,7 @@ in(C,I,array) :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expec
 var(true).
 :- var(false).
 { var(BV) } :- variable(bool, BV).
-&dom {L..U} = V :- variable(range_i(L,U), V).
+&dom {L..U} = V :- variable(int_in_range(L,U), V).
 
 %% int_eq
 :- constraint(C, "int_eq"),

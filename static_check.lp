@@ -38,8 +38,9 @@ supported(V) :- variable(bool,V).
 supported(V) :- variable(int,V).
 supported(V) :- variable(array(_,int),V).
 supported(V) :- variable(array(_,bool),V).
-supported(V) :- variable(range_i(_,_),V).
+supported(V) :- variable(int_in_range(_,_),V).
 
-fail(V) :- variable(_,V), not supported(V).
+fail(Type,V) :- variable(Type,V), not supported(V).
 
 #show fail/1.
+#show fail/2.
