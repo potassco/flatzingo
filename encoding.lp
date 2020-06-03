@@ -21,8 +21,8 @@ in(C,I,X,V)   :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expec
                  in_array(A,X,V).
 in(C,I,array) :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expected(Type,I).
 
-var(true).
-:- var(false).
+var("true").
+:- var("false").
 { var(BV) } :- variable(bool, BV).
 &dom {L..U} = V :- variable(int_in_range(L,U), V).
 
