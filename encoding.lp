@@ -313,6 +313,13 @@ var(true).
    in(C, 2, RHS), 
    not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} = RHS.
 
+%% bool_lin_ne
+:- constraint(C, "bool_lin_ne"),
+   in(C, 0, array), % safety check
+   in(C, 1, array), % safety check
+   in(C, 2, RHS), 
+   not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} != RHS.
+
 %% bool_lin_le
 :- constraint(C, "bool_lin_le"),
    in(C, 0, array), % safety check
@@ -404,6 +411,19 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 2, BV),
    var(A), var(B),
    var(BV).
+
+:- constraint(C, "bool_xor"),
+   in(C, 0, A),
+   in(C, 1, B),
+   not in(C, 2, _),
+   not var(A), not var(B).
+
+:- constraint(C, "bool_xor"),
+   in(C, 0, A),
+   in(C, 1, B),
+   not in(C, 2, _),
+   var(A), var(B).
+
 
 %% bool_clause
 :- constraint(C, "bool_clause_reif"),

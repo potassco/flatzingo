@@ -31,6 +31,27 @@ supported_constraint("bool_not").
 supported_constraint("bool_or").
 supported_constraint("bool_xor").
 supported_constraint("bool_clause_reif").
+TODO:
+predicate int_eq_imp(var int: a, var int: b, var bool: r);
+predicate int_ne_imp(var int: a, var int: b, var bool: r);
+predicate int_ge_imp(var int: a, var int: b, var bool: r);
+predicate int_gt_imp(var int: a, var int: b, var bool: r);
+predicate int_le_imp(var int: a, var int: b, var bool: r);
+predicate int_lt_imp(var int: a, var int: b, var bool: r);
+%supported_constraint("int_lin_eq_imp").
+%supported_constraint("int_lin_le_imp").
+%supported_constraint("int_lin_ne_imp").
+%supported_constraint("bool_eq_imp").
+%supported_constraint("bool_le_imp").
+%supported_constraint("bool_lt_imp").
+%supported_constraint("bool_clause_imp").
+
+predicate array_int_maximum(var int: m, array[int] of var int: x)
+array_int_minimum
+int_max
+int_min
+
+%%MISSING int_times
 
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
