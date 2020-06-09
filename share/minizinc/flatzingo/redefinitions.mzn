@@ -157,5 +157,124 @@ predicate int_pow( var int: x, var int: y, var int: r ) =
     } in
       r == x2y[ x, y ];
 
+predicate int_times(var int: x, var int: y, var int: z) =
+  if is_fixed(x) then
+    z==fix(x)*y             %%%%% Need to use fix() otherwise added to CSE & nothing happens
+  elseif is_fixed(y) then
+    z==x*fix(y)
+  elseif is_same(x, y) then
+    z == pow(x, 2)
+  elseif 0..1==dom(x) /\ 0..1==dom(y) then bool_and__INT(x,y,z)
+  elseif card(dom(x))==2 /\ card(dom(y))==2 /\ 0 in dom(x) /\ 0 in dom(y)
+      then let {
+        var 0..1: xn;
+        var 0..1: yn;
+        var 0..1: zn;
+        constraint x=xn*max(dom(x) diff {0});
+        constraint y=yn*max(dom(y) diff {0});
+        constraint z=zn*max(dom(x) diff {0})*max(dom(y) diff {0});
+      } in
+      bool_and__INT(xn,yn,zn)
+  elseif card(dom(x)) * card(dom(y)) > 20
+    \/ ( 
+        %% Peter's idea for *bool. More optimal but worse values on carpet cutting.
+        (card(dom(x))==2 /\ 0 in dom(x))
+        \/ (card(dom(y))==2 /\ 0 in dom(y))
+        )
+    then                    %% PARAM
+    %% ALSO NO POINT IF <=4.          TODO
+    if card(dom(x)) > card(dom(y)) \/
+      ( card(dom(x))==card(dom(y)) /\ 0 in dom(y) /\ not (0 in dom(x)) )
+      then int_times(y,x,z)
+    else
+      let {
+          set of int: s = lb(x)..ub(x),
+          set of int: r = {lb(x)*lb(y), lb(x)*ub(y), ub(x)*lb(y), ub(x)*ub(y)},
+          array[s] of var min(r)..max(r): ady = array1d(s, [
+            if d in dom(x) then d*y else min(r) endif | d in s ]) }
+      in
+      ady[x] = z                             %% use element()
+    endif
+  else
+    int_times_unary(x, { }, y, z)
+  endif;
 
-%% somehow assert that I do not support int_times or find a suitable translation
+predicate bool_and__INT(var int: x, var int: y, var int: z) =
+    x + y <= z + 1 /\
+    %% x + y >= z * 2;         % weak
+    x >= z /\ y >= z;     % strong
+
+%% domx__ can be used to narrow domain... NOT IMPL.
+predicate int_times_unary(var int: x, set of int: domx__, var int: y, var int: z) =
+  let {
+    set of int: r = {lb(x)*lb(y), lb(x)*ub(y), ub(x)*lb(y), ub(x)*ub(y)},
+    %% set of int: domx = if card(domx__)>0 then domx__ else dom(x) endif,
+    array[int, int] of var int: pp=eq_encode(x, y)
+  } in
+    z>=min(r) /\ z<=max(r) /\
+    z==sum(i in index_set_1of2(pp), j in index_set_2of2(pp))
+         (i * j * pp[i, j]) /\
+    forall(i in index_set_1of2(pp), j in index_set_2of2(pp)
+      where not ((i*j) in dom(z))
+    )(pp[i, j]==0)
+  ;
+
+function array[int, int] of var int: eq_encode(var int: x, var int: y) ::promise_total =
+  let {
+    array[int] of var int: pX = eq_encode(x),
+    array[int] of var int: pY = eq_encode(y),
+    array[int, int] of var int: pp = array2d(index_set(pX), index_set(pY),
+      [eq_new_var(x,i,y,j) | i in index_set(pX), j in index_set(pY)]);
+    constraint equality_encoding(x, y, pX, pY, pp);
+  } in pp;
+
+function array[int] of var int: eq_encode(var int: x) ::promise_total =
+  let {
+    array[int] of var int: y = array1d(lb(x)..ub(x),[eq_new_var(x,i) | i in lb(x)..ub(x)]);
+    constraint equality_encoding(x,y);
+  } in  y;
+
+function array[int] of int: eq_encode(int: x) ::promise_total =
+  array1d(lb(x)..ub(x),[ if i=x then 1 else 0 endif | i in lb(x)..ub(x)]);
+
+    % Two variables:  x = d /\ y = e  <->  x_eq_d[d] /\ y_eq_e[e] /\ xy_eq_de[d, e]
+predicate equality_encoding(var int: x, var int: y,
+      array[int] of var int: x_eq_d,
+      array[int] of var int: y_eq_e,
+      array[int, int] of var int: xy_eq_de
+      ) =
+    x in index_set(x_eq_d) /\
+    y in index_set(y_eq_e) /\
+    index_set(x_eq_d) == index_set_1of2(xy_eq_de) /\
+    index_set(y_eq_e) == index_set_2of2(xy_eq_de) /\
+    sum(d in dom(x), e in dom(y))( xy_eq_de[d, e] ) = 1
+    /\
+    forall(d in dom(x)) (sum(e in dom(y))( xy_eq_de[d, e] ) = x_eq_d[d])
+    /\
+    forall(e in dom(y)) (sum(d in dom(x))( xy_eq_de[d, e] ) = y_eq_e[e])
+    ;
+
+    % Single variable:  x = d  <->  x_eq_d[d]
+predicate equality_encoding(var int: x, array[int] of var int: x_eq_d) =
+    x in index_set(x_eq_d)
+    /\
+    sum(d in dom(x))(     x_eq_d[d] ) = 1
+    /\
+    sum(d in dom(x))( d * x_eq_d[d] ) = x
+    ;
+
+function var int: eq_new_var(var int: x, int: i) ::promise_total =
+  if i in dom(x) then
+  let {
+    var 0..1: xi;
+  } in xi
+  else 0 endif;
+
+%%% The same for 2 variables:
+function var int: eq_new_var(var int: x, int: i, var int: y, int: j) ::promise_total =
+  if i in dom(x) /\ j in dom(y) then
+  let {
+    var 0..1: xi;
+  } in xi
+  else 0 endif;
+
