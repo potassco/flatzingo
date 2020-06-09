@@ -51,6 +51,8 @@ supported_constraint("int_min").
 supported_constraint("array_int_maximum").
 supported_constraint("array_int_minimum").
 
+supported_constraint("all_different_int").
+
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
 supported(V) :- variable(bool,V).

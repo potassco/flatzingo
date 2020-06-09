@@ -615,5 +615,11 @@ var(B):- constraint(C, "bool_lt"),
 1 { bool_array_int_minimum(C,V) : in(C, 1, I, V) } 1:- constraint(C, "array_int_minimum").
 :- bool_array_int_minimum(C,V), in(C, 0, M), not &sum{M} = V.
 
+
+%% all_different_int
+&distinct {V,I : in(C, 0, I, V)} :- constraint(C, "all_different_int"),
+   in(C, 0, array). % safety check
+   
+
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
