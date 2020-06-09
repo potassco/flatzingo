@@ -175,6 +175,33 @@ var(true).
    not &sum { X } != Y,
    var(BV).
 
+%% int_lin_eq_imp
+:- constraint(C, "int_lin_eq_imp"),
+   in(C, 0, array), % safety check
+   in(C, 1, array), % safety check
+   in(C, 2, RHS),
+   in(C, 3, BV),
+   not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
+   var(BV).
+
+%% int_lin_le_imp
+:- constraint(C, "int_lin_le_imp"),
+   in(C, 0, array), % safety check
+   in(C, 1, array), % safety check
+   in(C, 2, RHS),
+   in(C, 3, BV),
+   not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS,
+   var(BV).
+
+%% int_lin_ne_imp
+:- constraint(C, "int_lin_ne_imp"),
+   in(C, 0, array), % safety check
+   in(C, 1, array), % safety check
+   in(C, 2, RHS),
+   in(C, 3, BV),
+   not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } != RHS,
+   var(BV).
+
 %% int_plus
 :- constraint(C, "int_plus"),
    in(C, 0, X),
@@ -183,6 +210,53 @@ var(true).
    not &sum { X + Y } = Z.
 
 
+%% int_eq_imp
+:- constraint(C, "int_eq_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } = Y,
+   var(BV).
+
+%% int_ne_imp
+:- constraint(C, "int_ne_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } != Y,
+   var(BV).
+
+%% int_ge_imp
+:- constraint(C, "int_ge_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } >= Y,
+   var(BV).
+
+%% int_gt_imp
+:- constraint(C, "int_gt_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } > Y,
+   var(BV).
+
+%% int_eq_imp
+:- constraint(C, "int_le_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } <= Y,
+   var(BV).
+
+%% int_eq_imp
+:- constraint(C, "int_lt_imp"),
+   in(C, 0, X),
+   in(C, 1, Y),
+   in(C, 2, BV), 
+   not &sum { X } < Y,
+   var(BV).
 
 %% array_bool_and
 :- constraint(C, "array_bool_and"),
@@ -277,7 +351,7 @@ var(true).
    in(C, 0, A),
    in(C, 1, B),
    in(C, 2, BV),
-   var(A), not var(B),
+   not var(A), var(B),
    var(BV).
 
 %% bool_le
@@ -425,7 +499,7 @@ var(B):- constraint(C, "bool_lt"),
    var(A), var(B).
 
 
-%% bool_clause
+%% bool_clause_reif
 :- constraint(C, "bool_clause_reif"),
    in(C, 0, array), % safety check
    in(C, 1, array), % safety check
@@ -445,6 +519,101 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 1, B), 
    not var(BV), in(C, 1, I, BV),
    not var(B).
+
+%% bool_eq_imp
+:- constraint(C, "bool_eq_imp"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, BV),
+   var(A), not var(B),
+   var(BV).
+:- constraint(C, "bool_eq_imp"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, BV),
+   not var(A), var(B),
+   var(BV).
+
+%% bool_le_imp
+:- constraint(C, "bool_le_imp"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, BV),
+   var(A), not var(B),
+   var(BV).
+
+%% bool_lt_imp
+:- constraint(C, "bool_lt_imp"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, BV),
+   var(A),
+   var(BV).
+:- constraint(C, "bool_lt_imp"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, BV),
+   not var(A), not var(B),
+   var(BV).
+
+%% bool_clause_imp
+:- constraint(C, "bool_clause_imp"),
+   in(C, 0, array), % safety check
+   in(C, 1, array), % safety check
+   in(C, 1, B), 
+   not var(BV) : in(C, 0, I, BV);
+   var(BV) : in(C, 1, I, BV),
+   var(B).
+
+%% int_max
+:- constraint(C, "int_max"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, X),
+   &sum {A} >= B,
+   not &sum{A} = X.
+:- constraint(C, "int_max"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, X),
+   &sum {A} < B,
+   not &sum{B} = X.
+
+%% int_min
+:- constraint(C, "int_min"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, X),
+   &sum {A} >= B,
+   not &sum{B} = X.
+:- constraint(C, "int_min"),
+   in(C, 0, A),
+   in(C, 1, B),
+   in(C, 2, X),
+   &sum {A} < B,
+   not &sum{A} = X.
+
+%% array_int_maximum
+:- constraint(C, "array_int_maximum"),
+   in(C, 0, M), % safety check
+   in(C, 1, array), % safety check
+   in(C, 1, X),
+   &sum {M} = A, in(C, 1, I, A),
+   &sum {M} > B, in(C, 1, I, B), A != B.
+
+1 { bool_array_int_maximum(C,V) : in(C, 1, I, V) } 1:- constraint(C, "array_int_maximum").
+:- bool_array_int_maximum(C,V), in(C, 0, M), not &sum{M} = V.
+
+%% array_int_minimum
+:- constraint(C, "array_int_minimum"),
+   in(C, 0, M), % safety check
+   in(C, 1, array), % safety check
+   in(C, 1, X),
+   &sum {M} = A, in(C, 1, I, A),
+   &sum {M} < B, in(C, 1, I, B), A != B.
+
+1 { bool_array_int_minimum(C,V) : in(C, 1, I, V) } 1:- constraint(C, "array_int_minimum").
+:- bool_array_int_minimum(C,V), in(C, 0, M), not &sum{M} = V.
 
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
