@@ -52,6 +52,7 @@ supported_constraint("array_int_maximum").
 supported_constraint("array_int_minimum").
 
 supported_constraint("all_different_int").
+supported_constraint("flatzingo_fixed_disjunctive").
 
 fail(C) :- constraint(C,T), not supported_constraint(T).
 

@@ -617,9 +617,13 @@ var(B):- constraint(C, "bool_lt"),
 
 
 %% all_different_int
-&distinct {V,I : in(C, 0, I, V)} :- constraint(C, "all_different_int"),
+&distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int"),
    in(C, 0, array). % safety check
    
+%% flatzingo_fixed_disjunctive
+&disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive"),
+   in(C, 0, array), % safety check
+   in(C, 1, array).
 
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
