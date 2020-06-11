@@ -75,3 +75,10 @@ fail(Type,V) :- variable(Type,V), not supported(V).
 
 #show fail/1.
 #show fail/2.
+
+numVar(bool,X) :- X = #sum {1,V : variable(bool,V)}.
+numVar(int,X) :- X = #sum {1,V : variable(int,V); 1,V : variable(int_in_range(_,_),V)}.
+numConstraint(T,X) :- constraint(_,T), X = #sum {1,C : constraint(C,T)}.
+
+#show numVar/2.
+#show numConstraint/2.
