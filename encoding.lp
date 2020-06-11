@@ -21,6 +21,10 @@ array_expected("bool_clause_reif",(0;1)).
 array_expected("bool_clause_imp",(0;1)).
 array_expected("all_different_int",0).
 array_expected("flatzingo_fixed_disjunctive",(0;1)).
+array_expected("pb_ge",0).
+array_expected("pb_le",0).
+array_expected("pb_eq",0).
+array_expected("pb_ne",0).
 
 
 
@@ -668,6 +672,27 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 2, BV),
    not var(BV),
    &sum {L} <= V, &sum {U} >= V, in(C, 1, set, L, U).
+
+%% pb_ge
+:- constraint(C, "pb_ge"),
+   in(C, 0, array), % safety check
+   in(C, 1, PB),
+   not #sum {1,var(B) : in(C, 0, I, B)} >= PB.
+%% pb_le
+:- constraint(C, "pb_le"),
+   in(C, 0, array), % safety check
+   in(C, 1, PB),
+   not #sum {1,var(B) : in(C, 0, I, B)} <= PB.
+%% pb_eq
+:- constraint(C, "pb_eq"),
+   in(C, 0, array), % safety check
+   in(C, 1, PB),
+   not #sum {1,var(B) : in(C, 0, I, B)} = PB.
+%% pb_ne
+:- constraint(C, "pb_ne"),
+   in(C, 0, array), % safety check
+   in(C, 1, PB),
+   not #sum {1,var(B) : in(C, 0, I, B)} != PB.
 
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.

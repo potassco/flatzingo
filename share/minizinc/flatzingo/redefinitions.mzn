@@ -13,12 +13,12 @@ predicate int_lin_ne_imp(array[int] of int: c, array[int] of var int: x, int: d,
 predicate bool_eq_imp(var bool: p, var bool: q, var bool: r);
 predicate bool_lt_imp(var bool: p, var bool: q, var bool: r);
 predicate bool_le_imp(var bool: p, var bool: q, var bool: r);
-predicate bool_clause_reif(array[int] of var bool: p, array[int] of var bool: n, var bool: c);
 
-%% non-linear functions
-%% write a translation for int_min/max and its array version inside the solver
-predicate array_int_maximum(var int: m, array[int] of var int: x);
-predicate array_int_minimum(var int: m, array[int] of var int: x);
+%% pb constraints
+predicate pb_ge(array[int] of var bool: x, int: v);
+predicate pb_le(array[int] of var bool: x, int: v);
+predicate pb_eq(array[int] of var bool: x, int: v);
+predicate pb_ne(array[int] of var bool: x, int: v);
 
 %%% Big thanks to Gleb Belov for this translation
 predicate array_int_element(var int: i00, array[int] of int: a, var int: z) =

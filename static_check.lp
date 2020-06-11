@@ -58,6 +58,11 @@ supported_constraint("set_in").
 supported_constraint("set_in_imp").
 supported_constraint("set_in_reif").
 
+supported_constraint("pb_ge").
+supported_constraint("pb_le").
+supported_constraint("pb_eq").
+supported_constraint("pb_ne").
+
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
 supported(V) :- variable(bool,V).

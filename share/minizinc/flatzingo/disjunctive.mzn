@@ -1,3 +1,4 @@
+include "disjunctive_strict.mzn";
 include "fzn_disjunctive.mzn";
 
 predicate disjunctive(array [int] of var int: s,
@@ -7,7 +8,11 @@ predicate disjunctive(array [int] of var int: s,
         if is_fixed(d) then
             flatzingo_fixed_disjunctive(s, fix(d))
         else
-            fzn_disjunctive(s, d)
+            if (lb_array(d) > 0) then
+              disjunctive_strict(s,d)
+            else
+              fzn_disjunctive(s,d)
+            endif
         endif
         );
 
