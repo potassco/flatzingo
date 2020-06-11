@@ -298,15 +298,13 @@ var(true).
    var(B).
 
 %% bool2int
-:- constraint(C, "bool2int"),
+&sum {V} <= 0 :- constraint(C, "bool2int"),
    in(C, 0, BV),
    in(C, 1, V),
-   &sum {V} = 1,
    not var(BV).
-:- constraint(C, "bool2int"),
+&sum {V} >= 1 :- constraint(C, "bool2int"),
    in(C, 0, BV),
    in(C, 1, V),
-   not &sum {V} = 1,
    var(BV).
 &dom{0..1} = V :- constraint(C, "bool2int"),
    in(C, 0, BV),
