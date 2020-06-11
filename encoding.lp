@@ -2,16 +2,27 @@
 %%%convert((Name,X)parameter(array(N,_),Name).
 array_expected("int_lin_eq",(0;1)).
 array_expected("int_lin_eq_reif",(0;1)).
+array_expected("int_lin_eq_imp",(0;1)).
 array_expected("int_lin_le",(0;1)).
 array_expected("int_lin_le_reif",(0;1)).
+array_expected("int_lin_le_imp",(0;1)).
 array_expected("int_lin_ne",(0;1)).
 array_expected("int_lin_ne_reif",(0;1)).
+array_expected("int_lin_ne_imp",(0;1)).
 array_expected("array_bool_and",0).
 array_expected("array_bool_or",0).
+array_expected("array_int_maximum",1).
+array_expected("array_int_minimum",1).
 array_expected("bool_clause",(0;1)).
 array_expected("bool_lin_eq",(0;1)).
+array_expected("bool_lin_ne",(0;1)).
 array_expected("bool_lin_le",(0;1)).
 array_expected("bool_clause_reif",(0;1)).
+array_expected("bool_clause_imp",(0;1)).
+array_expected("all_different_int",0).
+array_expected("flatzingo_fixed_disjunctive",(0;1)).
+
+
 
 in(C,I,array) :- in_constraint(C,I,array).
 in(C,I,X,V)   :- in_constraint(C,I,X,V).
