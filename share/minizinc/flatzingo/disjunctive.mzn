@@ -11,5 +11,5 @@ predicate disjunctive(array [int] of var int: s,
         endif
         );
 
-predicate flatzingo_fixed_disjunctive(array [int] of var opt int: s,
+predicate flatzingo_fixed_disjunctive(array [int] of var int: s,
                                       array [int] of int: d);

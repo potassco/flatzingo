@@ -54,6 +54,10 @@ supported_constraint("array_int_minimum").
 supported_constraint("all_different_int").
 supported_constraint("flatzingo_fixed_disjunctive").
 
+supported_constraint("set_in").
+supported_constraint("set_in_imp").
+supported_constraint("set_in_reif").
+
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
 supported(V) :- variable(bool,V).

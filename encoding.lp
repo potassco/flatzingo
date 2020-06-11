@@ -625,5 +625,38 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 0, array), % safety check
    in(C, 1, array).
 
+
+%% set_in
+&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in"),
+   in(C, 0, V),
+   in(C, 1, set). % safety check
+
+%% set_in_imp
+&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in_imp"),
+   in(C, 0, V),
+   in(C, 1, set), % safety check
+   in(C, 2, BV),
+   var(BV).
+
+%% set_in_reif
+&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in_reif"),
+   in(C, 0, V),
+   in(C, 1, set), % safety check
+   in(C, 2, BV),
+   var(BV).
+:- constraint(C, "set_in_reif"),
+   in(C, 0, V),
+   in(C, 1, set), % safety check
+   in(C, 2, BV),
+   not var(BV),
+   &sum {X} = V, in(C, 1, set, X).
+
+:- constraint(C, "set_in_reif"),
+   in(C, 0, V),
+   in(C, 1, set), % safety check
+   in(C, 2, BV),
+   not var(BV),
+   &sum {L} <= V, &sum {U} >= V, in(C, 1, set, L, U).
+
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
