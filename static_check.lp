@@ -65,19 +65,20 @@ supported_constraint("pb_ne").
 
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
-supported(V) :- variable(bool,V).
-supported(V) :- variable(int,V).
-supported(V) :- variable(array(_,int),V).
-supported(V) :- variable(array(_,bool),V).
-supported(V) :- variable(int_in_range(_,_),V).
+supported(V) :- variable(V,bool).
+supported(V) :- variable(V,int).
+supported(V) :- variable(V,array(_,int)).
+supported(V) :- variable(V,array(_,bool)).
+supported(V) :- variable(V,int_in_range(_,_)).
+supported(V) :- variable(V,int_in_set(_,_)).
 
-fail(Type,V) :- variable(Type,V), not supported(V).
+fail(Type,V) :- variable(V,Type), not supported(V).
 
 #show fail/1.
 #show fail/2.
 
-numVar(bool,X) :- X = #sum {1,V : variable(bool,V)}.
-numVar(int,X) :- X = #sum {1,V : variable(int,V); 1,V : variable(int_in_range(_,_),V)}.
+numVar(bool,X) :- X = #sum {1,V : variable(V,bool)}.
+numVar(int,X) :- X = #sum {1,V : variable(V,int); 1,V : variable(V,int_in_range(_,_)); 1,V : variable(V, int_in_set(_))}.
 numConstraint(T,X) :- constraint(_,T), X = #sum {1,C : constraint(C,T)}.
 
 #show numVar/2.

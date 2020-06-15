@@ -29,18 +29,28 @@ array_expected("pb_ne",0).
 
 
 in(C,I,array) :- in_constraint(C,I,array).
-in(C,I,X,V)   :- in_constraint(C,I,X,V).
+in(C,I,array) :- in_constraint(C,I,array_of_int(_,_)).
+in(C,I,X,V)   :- in_constraint(C,I,array_of_int(X,V)).
 in(C,I,V)     :- in_constraint(C,I,V), constraint(C,Type), not array_expected(Type,I).
 
 in(C,I,X,V)   :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expected(Type,I),
                  in_array(A,X,V).
 in(C,I,array) :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expected(Type,I).
 
+in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
+in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
+in(C,I,set) :- in_constraint(C,I,set_of_int(_)).
+in(C,I,set) :- in_constraint(C,I,set_int_range(_,_)).
+
 var(true).
 :- var(false).
-{ var(BV) } :- variable(bool, BV).
-&dom {L..U} = V :- variable(int_in_range(L,U), V).
+{ var(BV) } :- variable(BV, bool).
+variable_int(V) :- variable(V, int_in_range(_,_)).
+variable_int(V) :- variable(V, int).
+variable_int(V) :- variable(V, int_in_set(_)).
+&dom {L..U : variable(V, int_in_range(L,U)); X : variable(V, int_in_set(X))} = V :- variable_int(V).
 
+%*
 %% int_eq
 :- constraint(C, "int_eq"),
    in(C, 0, X),
@@ -103,7 +113,7 @@ var(true).
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
    var(BV).
-
+*%
 %% int_lin_le
 :- constraint(C, "int_lin_le"),
    in(C, 0, array), % safety check
@@ -111,6 +121,7 @@ var(true).
    in(C, 2, RHS),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS.
 
+%*
 %% int_lin_le_reif
 :- constraint(C, "int_lin_le_reif"),
    in(C, 0, array), % safety check
@@ -639,20 +650,22 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 1, array).
 
 
+in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
+in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 %% set_in
-&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in"),
+&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in"),
    in(C, 0, V),
    in(C, 1, set). % safety check
 
 %% set_in_imp
-&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in_imp"),
+&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_imp"),
    in(C, 0, V),
    in(C, 1, set), % safety check
    in(C, 2, BV),
    var(BV).
 
 %% set_in_reif
-&dom{X : in(C, 1, set, X); L..U : in(C, 1, set, L, U)} = V :- constraint(C, "set_in_reif"),
+&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_reif"),
    in(C, 0, V),
    in(C, 1, set), % safety check
    in(C, 2, BV),
@@ -662,14 +675,14 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 1, set), % safety check
    in(C, 2, BV),
    not var(BV),
-   &sum {X} = V, in(C, 1, set, X).
+   &sum {X} = V, in(C, 1, int(X)).
 
 :- constraint(C, "set_in_reif"),
    in(C, 0, V),
    in(C, 1, set), % safety check
    in(C, 2, BV),
    not var(BV),
-   &sum {L} <= V, &sum {U} >= V, in(C, 1, set, L, U).
+   &sum {L} <= V, &sum {U} >= V, in(C, 1, range(L, U)).
 
 %% pb_ge
 :- constraint(C, "pb_ge"),
@@ -694,3 +707,4 @@ var(B):- constraint(C, "bool_lt"),
 
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
+*%
