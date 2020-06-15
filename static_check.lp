@@ -70,7 +70,7 @@ supported(V) :- variable(V,int).
 supported(V) :- variable(V,array(_,int)).
 supported(V) :- variable(V,array(_,bool)).
 supported(V) :- variable(V,int_in_range(_,_)).
-supported(V) :- variable(V,int_in_set(_,_)).
+supported(V) :- variable(V,int_in_set(_)).
 
 fail(Type,V) :- variable(V,Type), not supported(V).
 
