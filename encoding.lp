@@ -50,7 +50,7 @@ variable_int(V) :- variable(V, int).
 variable_int(V) :- variable(V, int_in_set(_)).
 &dom {L..U : variable(V, int_in_range(L,U)); X : variable(V, int_in_set(X))} = V :- variable_int(V).
 
-%*
+
 %% int_eq
 :- constraint(C, "int_eq"),
    in(C, 0, X),
@@ -113,7 +113,7 @@ variable_int(V) :- variable(V, int_in_set(_)).
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
    var(BV).
-*%
+
 %% int_lin_le
 :- constraint(C, "int_lin_le"),
    in(C, 0, array), % safety check
@@ -121,7 +121,7 @@ variable_int(V) :- variable(V, int_in_set(_)).
    in(C, 2, RHS),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS.
 
-%*
+
 %% int_lin_le_reif
 :- constraint(C, "int_lin_le_reif"),
    in(C, 0, array), % safety check
@@ -707,4 +707,4 @@ in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 
 &minimize {V : solve(minimize, V)}.
 &minimize {-V : solve(maximize, V)}.
-*%
+
