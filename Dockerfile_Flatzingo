@@ -1,0 +1,87 @@
+#------------------------------------------------------------------------------#
+# This file contains the setup for the flatzingo submission to the MiniZinc
+# challenge. It uses two stages. In the first stage, it builds/compiles
+# flatzingo in the same OS as the MiniZinc Challenge docker image. The second 
+# stage extends the provided MiniZinc Challenge docker image by copying the
+# flatzingo executable and its MiniZinc library across from the first stage as
+# well as installing missing libraries for running flatzingo if necessary. 
+# Note that you do not have to use multi stages. Everything can be done in a 
+# one stage build. However, Note that the statements ADD, RUN, and COPY can 
+# add image layers, which can increase the size of the layer you have to 
+# upload.
+#------------------------------------------------------------------------------#
+# 1. Stage: Compilation of flatzingo in a Build Stage
+
+# Using the same image as for the MiniZinc Challenge
+FROM ubuntu:18.04 AS builder
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+
+# Updating & installing necessary packages
+RUN apt-get update -y && apt-get install -y \
+    bison \
+    build-essential \
+    cmake \
+    flex \
+    git \
+    curl \
+    tree
+
+RUN \
+    echo "#!/bin/bash                                                 " >  clingcon_install.sh && \
+    echo "#----------------------------------------------------------#" >> clingcon_install.sh && \
+    echo "echo \"# Script for compiling clingcon\"                    " >> clingcon_install.sh && \
+    echo "#----------------------------------------------------------#" >> clingcon_install.sh && \
+    echo "curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" >> clingcon_install.sh && \
+    echo "chmod +x ./Miniconda3-latest-Linux-x86_64.sh" >> clingcon_install.sh && \
+    echo "./Miniconda3-latest-Linux-x86_64.sh -b" >> clingcon_install.sh && \
+    echo "echo \"# installed miniconda\"                    " >> clingcon_install.sh && \
+    echo "conda init bash" >> clingcon_install.sh && \
+    echo "echo \"# conda init bash called\"                    " >> clingcon_install.sh && \
+    echo "source ~/.bashrc" >> clingcon_install.sh && \
+    echo "conda create -n clingcon -c potassco/label/dev -c conda-forge clingo ninja cmake gxx_linux-64 libcxx clang-tools" >> clingcon_install.sh && \
+    echo "echo \"# created environment\"                    " >> clingcon_install.sh && \
+#    echo "conda activate clingcon" clingcon_install.sh && \
+#    echo "echo \"# activates environment\"                    " >> clingcon_install.sh && \
+    echo "git clone https://github.com/potassco/clingcon.git" >> clingcon_install.sh && \
+    echo "cd clingcon" >> clingcon_install.sh && \
+    echo "conda run -n clingcon cmake -G Ninja -H. -B"build" -DCMAKE_BUILD_TYPE=Release -DCLINGCON_BUILD_TESTS=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCLINGCON_BUILD_STATIC=On" >> clingcon_install.sh && \
+    echo "conda run -n clingcon cmake --build build --target all" >> clingcon_install.sh && \
+    echo "echo \"called make\" " >> clingcon_install.sh && \
+    echo "tree . " >> clingcon_install.sh && \
+    echo "./build/bin/clingcon --version" >> clingcon_install.sh && \
+    echo "cd .." >> clingcon_install.sh && \
+    chmod a+x /clingcon_install.sh && \
+    ./clingcon_install.sh
+
+RUN curl https://sh.rustup.rs | bash -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+# bad idea to use meow and also to use update ?
+RUN git clone https://github.com/sthiele/fzn2lp.git && \
+    cd fzn2lp && \
+    git checkout meow && \
+    cargo update && \ 
+    cargo build --release && \
+    cd ..
+
+RUN git clone https://github.com/sthiele/flatzingo.git
+
+#------------------------------------------------------------------------------#
+# 2. Stage: Setup of flatzingo in the MiniZinc Challenge docker image
+#
+# Using the MiniZinc Challenge docker image
+FROM minizinc/mznc2020
+
+# Copy clingcon's executable from the previous stage across
+COPY --from=builder /clingcon/build/bin/clingcon /entry_data/clingcon
+
+# Copy fzn2lp's executable from the previous stage across
+COPY --from=builder /fzn2lp/target/release/fzn2lp /entry_data/
+
+# Copy flatzingo's executable from the previous stage across
+COPY --from=builder /flatzingo/build/fzn-flatzingo.py /entry_data/
+COPY --from=builder /flatzingo/build/fzn-flatzingo.sh /entry_data/fzn-exec
+RUN chmod a+x /entry_data/fzn-exec
+
+# Copy flatzingo's MiniZinc library from the previous stage across
+COPY --from=builder /flatzingo/flatzingo/flatzinc/mznlib/* /entry_data/mzn-lib/
