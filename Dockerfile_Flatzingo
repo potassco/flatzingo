@@ -79,9 +79,9 @@ COPY --from=builder /clingcon/build/bin/clingcon /entry_data/clingcon
 COPY --from=builder /fzn2lp/target/release/fzn2lp /entry_data/
 
 # Copy flatzingo's executable from the previous stage across
-COPY --from=builder /flatzingo/build/fzn-flatzingo.py /entry_data/
-COPY --from=builder /flatzingo/build/fzn-flatzingo.sh /entry_data/fzn-exec
+COPY --from=builder /flatzingo/fzn-flatzingo.py /entry_data/
+COPY --from=builder /flatzingo/fzn-flatzingo.sh /entry_data/fzn-exec
 RUN chmod a+x /entry_data/fzn-exec
 
 # Copy flatzingo's MiniZinc library from the previous stage across
-COPY --from=builder /flatzingo/flatzingo/flatzinc/mznlib/* /entry_data/mzn-lib/
+COPY --from=builder /flatzingo/share/minizinc/flatzingo/* /entry_data/mzn-lib/

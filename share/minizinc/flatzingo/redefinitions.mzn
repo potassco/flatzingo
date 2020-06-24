@@ -162,8 +162,8 @@ predicate int_times(var int: x, var int: y, var int: z) =
     z==fix(x)*y             %%%%% Need to use fix() otherwise added to CSE & nothing happens
   elseif is_fixed(y) then
     z==x*fix(y)
-  elseif is_same(x, y) then
-    z == pow(x, 2)
+%  elseif is_same(x, y) then
+%    z == pow(x, 2)
   elseif 0..1==dom(x) /\ 0..1==dom(y) then bool_and__INT(x,y,z)
   elseif card(dom(x))==2 /\ card(dom(y))==2 /\ 0 in dom(x) /\ 0 in dom(y)
       then let {
