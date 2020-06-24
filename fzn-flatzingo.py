@@ -5,9 +5,9 @@ import sys
 def main():
     parser = argparse.ArgumentParser(description='Solve CP Problems using clingcon.')
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-a', dest='solutions', default=1, action='store_const', const=0, 
+    group.add_argument('-a', action='store_true', 
                        help='Compute all solutions.')
-    group.add_argument('-n', dest='solutions', default=1, type=int,
+    group.add_argument('-n', type=int,
                        help='Compute n solutions. 0=all')
     parser.add_argument('-f', action='store_true',
                        help='Enable free search. default: only free search supported.')
@@ -30,8 +30,21 @@ def main():
         for line in inputfile:
             if "maximize" in line or "minimize" in line:
                 optimization = True
+    if args.n is not None and optimization:
+        raise Exception("Option -n is not allowed on optimization problems")
+
+    clingcon_command = ["clingcon", "encoding.lp", "-"]
+    num_models = 1
+    if args.a:
+        num_models = 0
+    if optimization:
+        num_models = 0
+    if args.n is not None:
+        num_models = args.n
+    clingcon_command.append(str(num_models))
+
     with Popen(["fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
-        with Popen(["clingcon", "encoding.lp", "-"], stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
+        with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             for line in clingcon.stdout:
                 print(line, end='')
                 sys.stdout.flush()
