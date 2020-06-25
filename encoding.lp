@@ -1,49 +1,27 @@
-%%% TODO: parameters can occur wherever variables can, but not wise versa
-%%%convert((Name,X)parameter(array(N,_),Name).
-array_expected("int_lin_eq",(0;1)).
-array_expected("int_lin_eq_reif",(0;1)).
-array_expected("int_lin_eq_imp",(0;1)).
-array_expected("int_lin_le",(0;1)).
-array_expected("int_lin_le_reif",(0;1)).
-array_expected("int_lin_le_imp",(0;1)).
-array_expected("int_lin_ne",(0;1)).
-array_expected("int_lin_ne_reif",(0;1)).
-array_expected("int_lin_ne_imp",(0;1)).
-array_expected("array_bool_and",0).
-array_expected("array_bool_or",0).
-array_expected("array_int_maximum",1).
-array_expected("array_int_minimum",1).
-array_expected("bool_clause",(0;1)).
-array_expected("bool_lin_eq",(0;1)).
-array_expected("bool_lin_ne",(0;1)).
-array_expected("bool_lin_le",(0;1)).
-array_expected("bool_clause_reif",(0;1)).
-array_expected("bool_clause_imp",(0;1)).
-array_expected("all_different_int",0).
-array_expected("flatzingo_fixed_disjunctive",(0;1)).
-array_expected("pb_ge",0).
-array_expected("pb_le",0).
-array_expected("pb_eq",0).
-array_expected("pb_ne",0).
+%%%values
+in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
+             constraint_value(C,I,value,V).
+in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
+             constraint_value(C,I,var,V).
 
+%%%arrays
+in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+                constraint_value(C,I,var,X), parameter_value(X,array,(AI,value,V)). %arrays of sets of ints not needed
+%TODO: arrays of variables of integers, do not yet know how to name them
+in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+                constraint_value(C,I,array,(AI,_,V)).
 
+%%%sets
+in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+               constraint_value((C,I,set,(value,V)).
+in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
+               constraint_value((C,I,set,(range,(L,U))). % set of variables not needed yet
+in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+               constraint_value(C,I,var,X), parameter_value(X,set,(value,V)).
+in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
+               constraint_value(C,I,var,X), parameter_value(X,set,(range,(L,U))).
 
-%in(C,I,V) :- 
-
-in(C,I,array) :- in_constraint(C,I,array).
-in(C,I,array) :- in_constraint(C,I,array_of_int(_,_)).
-in(C,I,X,V)   :- in_constraint(C,I,array_of_int(X,V)).
-in(C,I,V)     :- in_constraint(C,I,V), constraint(C,Type), not array_expected(Type,I).
-
-in(C,I,X,V)   :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expected(Type,I),
-                 in_array(A,X,V).
-in(C,I,array) :- in_constraint(C,I,A), A!=array, constraint(C,Type), array_expected(Type,I).
-
-in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
-in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
-in(C,I,set) :- in_constraint(C,I,set_of_int(_)).
-in(C,I,set) :- in_constraint(C,I,set_int_range(_,_)).
-
+%%% variable types
 var(true).
 :- var(false).
 { var(BV) } :- variable_type(BV, bool).
@@ -52,8 +30,9 @@ variable_int(V) :- variable_type(V, int).
 variable_int(V) :- variable_type(V, int, set, _).
 &dom {L..U : variable_type(V, int, set, (range,(L,U))); X : variable_type(V, int, set, (value, X))} = V :- variable_int(V).
 
-%%% Pre every variable_value needs to be defined using a variable_type before TODO: add to static check
 
+%%% variable assignments
+%%% Pre every variable_value needs to be defined using a variable_type before TODO: add to static check
 &sum {X} = V :- variable_int(V), variable_value(V, value, X).
 &sum {X} = V :- variable_int(V), variable_value(V, var, X).
 
@@ -65,6 +44,8 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 :- variable_bool(V), variable_value(V, var, X),
    not var(V), var(X).
 
+
+%%% constraints
 %% int_eq
 :- constraint(C, "int_eq"),
    in(C, 0, X),
@@ -632,18 +613,17 @@ var(B):- constraint(C, "bool_lt"),
 in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
 in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 %% set_in
-&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in"),
+&dom{X : in(C, 1, X); L..U : in(C, 1, L, U)} = V :- constraint(C, "set_in"),
    in(C, 0, V).
 
-TODO: check set notation
 %% set_in_imp
-&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_imp"),
+&dom{X : in(C, 1, X); L..U : in(C, 1, L, U)} = V :- constraint(C, "set_in_imp"),
    in(C, 0, V),
    in(C, 2, BV),
    var(BV).
 
 %% set_in_reif
-&dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_reif"),
+&dom{X : in(C, 1, X); L..U : in(C, 1, L, U)} = V :- constraint(C, "set_in_reif"),
    in(C, 0, V),
    in(C, 2, BV),
    var(BV).
@@ -651,13 +631,13 @@ TODO: check set notation
    in(C, 0, V),
    in(C, 2, BV),
    not var(BV),
-   &sum {X} = V, in(C, 1, int(X)).
+   &sum {X} = V, in(C, 1, X).
 
 :- constraint(C, "set_in_reif"),
    in(C, 0, V),
    in(C, 2, BV),
    not var(BV),
-   &sum {L} <= V, &sum {U} >= V, in(C, 1, range(L, U)).
+   &sum {L} <= V, &sum {U} >= V, in(C, 1, L, U).
 
 %% pb_ge
 :- constraint(C, "pb_ge"),
