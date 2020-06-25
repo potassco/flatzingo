@@ -63,16 +63,33 @@ supported_constraint("pb_le").
 supported_constraint("pb_eq").
 supported_constraint("pb_ne").
 
+#include "types.lp".
+
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
-supported(V) :- variable(V,bool).
-supported(V) :- variable(V,int).
-supported(V) :- variable(V,array(_,int)).
-supported(V) :- variable(V,array(_,bool)).
-supported(V) :- variable(V,int_in_range(_,_)).
-supported(V) :- variable(V,int_in_set(_)).
+supported(V) :- variable_type(V,bool).
+supported(V) :- variable_type(V,int).
+supported(V) :- variable_type(V,int, set, _).
+supported(V) :- variable_type(V,array(_,int)).
+supported(V) :- variable_type(V,array(_,bool)).
 
 fail(Type,V) :- variable(V,Type), not supported(V).
+fail(Type,V) :- variable(V,Type,_), not supported(V).
+
+fail(C,T) :- constraint(C,T), constraint_type(T,I,value),
+             constraint_value(C,I,array,_).
+fail(C,T) :- constraint(C,T), constraint_type(T,I,value),
+             constraint_value(C,I,set,_).
+
+fail(C,T) :- constraint(C,T), constraint_type(T,I,array),
+             constraint_value(C,I,value,_).
+fail(C,T) :- constraint(C,T), constraint_type(T,I,array),
+             constraint_value(C,I,set,_).
+
+fail(C,T) :- constraint(C,T), constraint_type(T,I,set),
+             constraint_value(C,I,value,_).
+fail(C,T) :- constraint(C,T), constraint_type(T,I,set),
+             constraint_value(C,I,array,_).
 
 #show fail/1.
 #show fail/2.

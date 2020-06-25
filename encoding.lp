@@ -1,3 +1,4 @@
+#include "types.lp".
 %%%values
 in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
              constraint_value(C,I,value,V).
@@ -13,9 +14,9 @@ in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
 
 %%%sets
 in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
-               constraint_value((C,I,set,(value,V)).
+               constraint_value(C,I,set,(value,V)).
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
-               constraint_value((C,I,set,(range,(L,U))). % set of variables not needed yet
+               constraint_value(C,I,set,(range,(L,U))). % set of variables not needed yet
 in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,set,(value,V)).
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
