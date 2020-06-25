@@ -28,6 +28,8 @@ array_expected("pb_ne",0).
 
 
 
+%in(C,I,V) :- 
+
 in(C,I,array) :- in_constraint(C,I,array).
 in(C,I,array) :- in_constraint(C,I,array_of_int(_,_)).
 in(C,I,X,V)   :- in_constraint(C,I,array_of_int(X,V)).
@@ -44,12 +46,24 @@ in(C,I,set) :- in_constraint(C,I,set_int_range(_,_)).
 
 var(true).
 :- var(false).
-{ var(BV) } :- variable(BV, bool).
-variable_int(V) :- variable(V, int_in_range(_,_)).
-variable_int(V) :- variable(V, int).
-variable_int(V) :- variable(V, int_in_set(_)).
-&dom {L..U : variable(V, int_in_range(L,U)); X : variable(V, int_in_set(X))} = V :- variable_int(V).
+{ var(BV) } :- variable_type(BV, bool).
 
+variable_int(V) :- variable_type(V, int).
+variable_int(V) :- variable_type(V, int, set, _).
+&dom {L..U : variable_type(V, int, set, (range,(L,U))); X : variable_type(V, int, set, (value, X))} = V :- variable_int(V).
+
+%%% Pre every variable_value needs to be defined using a variable_type before TODO: add to static check
+
+&sum {X} = V :- variable_int(V), variable_value(V, value, X).
+&sum {X} = V :- variable_int(V), variable_value(V, var, X).
+
+var(V) :- variable_bool(V), variable_value(V, value, true).
+:- variable_bool(V), variable_value(V, value, false),
+   var(V).
+:- variable_bool(V), variable_value(V, var, X),
+   var(V), not var(X).
+:- variable_bool(V), variable_value(V, var, X),
+   not var(V), var(X).
 
 %% int_eq
 :- constraint(C, "int_eq"),
@@ -93,8 +107,6 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% int_lin_eq
 :- constraint(C, "int_lin_eq"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS.
 
@@ -203,8 +215,6 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% int_lin_eq_imp
 :- constraint(C, "int_lin_eq_imp"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
@@ -212,8 +222,6 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% int_lin_le_imp
 :- constraint(C, "int_lin_le_imp"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS,
@@ -221,8 +229,6 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% int_lin_ne_imp
 :- constraint(C, "int_lin_ne_imp"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } != RHS,
@@ -286,24 +292,20 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% array_bool_and
 :- constraint(C, "array_bool_and"),
-   in(C, 0, array), % safety check
    in(C, 1, B),
    var(BV) : in(C, 0, I, BV),
    not var(B).
 :- constraint(C, "array_bool_and"),
-   in(C, 0, array), % safety check
    in(C, 1, B),
    not var(BV), in(C, 0, I, BV),
    var(B).
 
 %% array_bool_or
 :- constraint(C, "array_bool_or"),
-   in(C, 0, array), % safety check
    in(C, 1, B),
    var(BV), in(C, 0, I, BV),
    not var(B).
 :- constraint(C, "array_bool_or"),
-   in(C, 0, array), % safety check
    in(C, 1, B),
    not var(BV) : in(C, 0, I, BV),
    var(B).
@@ -337,8 +339,6 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% bool_clause
 :- constraint(C, "bool_clause"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    not var(BV) : in(C, 0, I, BV);
    var(BV) : in(C, 1, I, BV).
 
@@ -406,22 +406,16 @@ variable_int(V) :- variable(V, int_in_set(_)).
 
 %% bool_lin_eq
 :- constraint(C, "bool_lin_eq"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS), 
    not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} = RHS.
 
 %% bool_lin_ne
 :- constraint(C, "bool_lin_ne"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS), 
    not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} != RHS.
 
 %% bool_lin_le
 :- constraint(C, "bool_lin_le"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS), 
    not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} <= RHS.
 
@@ -525,22 +519,16 @@ var(B):- constraint(C, "bool_lt"),
 
 %% bool_clause_reif
 :- constraint(C, "bool_clause_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, B), 
+   in(C, 2, B), 
    not var(BV) : in(C, 0, I, BV);
    var(BV) : in(C, 1, I, BV),
    var(B).
 :- constraint(C, "bool_clause_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, B), 
+   in(C, 2, B), 
    var(BV), in(C, 0, I, BV),
    not var(B).
 :- constraint(C, "bool_clause_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, B), 
+   in(C, 2, B), 
    not var(BV), in(C, 1, I, BV),
    not var(B).
 
@@ -582,9 +570,7 @@ var(B):- constraint(C, "bool_lt"),
 
 %% bool_clause_imp
 :- constraint(C, "bool_clause_imp"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, B), 
+   in(C, 2, B), 
    not var(BV) : in(C, 0, I, BV);
    var(BV) : in(C, 1, I, BV),
    var(B).
@@ -619,9 +605,7 @@ var(B):- constraint(C, "bool_lt"),
 
 %% array_int_maximum
 :- constraint(C, "array_int_maximum"),
-   in(C, 0, M), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, X),
+   in(C, 0, M),
    &sum {M} = A, in(C, 1, I, A),
    &sum {M} > B, in(C, 1, I, B), A != B.
 
@@ -630,9 +614,7 @@ var(B):- constraint(C, "bool_lt"),
 
 %% array_int_minimum
 :- constraint(C, "array_int_minimum"),
-   in(C, 0, M), % safety check
-   in(C, 1, array), % safety check
-   in(C, 1, X),
+   in(C, 0, M),
    &sum {M} = A, in(C, 1, I, A),
    &sum {M} < B, in(C, 1, I, B), A != B.
 
@@ -641,67 +623,56 @@ var(B):- constraint(C, "bool_lt"),
 
 
 %% all_different_int
-&distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int"),
-   in(C, 0, array). % safety check
+&distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int").
    
 %% flatzingo_fixed_disjunctive
-&disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive"),
-   in(C, 0, array), % safety check
-   in(C, 1, array).
+&disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive").
 
 
 in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
 in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 %% set_in
 &dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in"),
-   in(C, 0, V),
-   in(C, 1, set). % safety check
+   in(C, 0, V).
 
+TODO: check set notation
 %% set_in_imp
 &dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_imp"),
    in(C, 0, V),
-   in(C, 1, set), % safety check
    in(C, 2, BV),
    var(BV).
 
 %% set_in_reif
 &dom{X : in(C, 1, int(X)); L..U : in(C, 1, range(L, U))} = V :- constraint(C, "set_in_reif"),
    in(C, 0, V),
-   in(C, 1, set), % safety check
    in(C, 2, BV),
    var(BV).
 :- constraint(C, "set_in_reif"),
    in(C, 0, V),
-   in(C, 1, set), % safety check
    in(C, 2, BV),
    not var(BV),
    &sum {X} = V, in(C, 1, int(X)).
 
 :- constraint(C, "set_in_reif"),
    in(C, 0, V),
-   in(C, 1, set), % safety check
    in(C, 2, BV),
    not var(BV),
    &sum {L} <= V, &sum {U} >= V, in(C, 1, range(L, U)).
 
 %% pb_ge
 :- constraint(C, "pb_ge"),
-   in(C, 0, array), % safety check
    in(C, 1, PB),
    not #sum {1,var(B) : in(C, 0, I, B)} >= PB.
 %% pb_le
 :- constraint(C, "pb_le"),
-   in(C, 0, array), % safety check
    in(C, 1, PB),
    not #sum {1,var(B) : in(C, 0, I, B)} <= PB.
 %% pb_eq
 :- constraint(C, "pb_eq"),
-   in(C, 0, array), % safety check
    in(C, 1, PB),
    not #sum {1,var(B) : in(C, 0, I, B)} = PB.
 %% pb_ne
 :- constraint(C, "pb_ne"),
-   in(C, 0, array), % safety check
    in(C, 1, PB),
    not #sum {1,var(B) : in(C, 0, I, B)} != PB.
 
