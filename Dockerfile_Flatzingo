@@ -25,7 +25,7 @@ RUN apt-get update -y && apt-get install -y \
     flex \
     git \
     curl \
-    tree
+    python3.8
 
 RUN \
     echo "#!/bin/bash                                                 " >  clingcon_install.sh && \
