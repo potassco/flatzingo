@@ -24,8 +24,7 @@ RUN apt-get update -y && apt-get install -y \
     cmake \
     flex \
     git \
-    curl \
-    python3.8
+    curl
 
 RUN \
     echo "#!/bin/bash                                                 " >  clingcon_install.sh && \
@@ -71,6 +70,9 @@ RUN git clone https://github.com/sthiele/flatzingo.git
 #
 # Using the MiniZinc Challenge docker image
 FROM minizinc/mznc2020
+
+# Installing python for wrapper script
+RUN echo "hello" && apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:deadsnakes/ppa && apt-get update -y && apt-get install -y python3.8
 
 # Copy clingcon's executable from the previous stage across
 COPY --from=builder /clingcon/build/bin/clingcon /entry_data/clingcon
