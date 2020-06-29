@@ -8,7 +8,10 @@ in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
 %%%arrays
 in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
                 constraint_value(C,I,var,X), parameter_value(X,array,(AI,value,V)). %arrays of sets of ints not needed
-%TODO: arrays of variables of integers, do not yet know how to name them
+in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+                constraint_value(C,I,var,X), variable_value(X,array,(AI,value,V)).
+in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+                constraint_value(C,I,var,X), variable_value(X,array,(AI,var,V)).
 in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
                 constraint_value(C,I,array,(AI,_,V)).
 
@@ -36,6 +39,7 @@ variable_int(V) :- variable_type(V, int, set, _).
 %%% Pre every variable_value needs to be defined using a variable_type before TODO: add to static check
 &sum {X} = V :- variable_int(V), variable_value(V, value, X).
 &sum {X} = V :- variable_int(V), variable_value(V, var, X).
+
 
 var(V) :- variable_bool(V), variable_value(V, value, true).
 :- variable_bool(V), variable_value(V, value, false),
