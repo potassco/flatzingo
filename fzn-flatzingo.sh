@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python3 fzn-flatzingo.py "$@"
+python3 /entry-data/fzn-flatzingo.py "$@"
