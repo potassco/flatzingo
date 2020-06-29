@@ -1,6 +1,8 @@
 import argparse
 from subprocess import *
 import sys
+import os
+
 
 def main():
     parser = argparse.ArgumentParser(description='Solve CP Problems using clingcon.')
@@ -33,7 +35,7 @@ def main():
     if args.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    clingcon_command = ["clingcon", "encoding.lp", "-"]
+    clingcon_command = [os.path.join(sys.path[0],"clingcon"), "encoding.lp", "-"]
     num_models = 1
     if args.a:
         num_models = 0
@@ -51,7 +53,7 @@ def main():
     if args.t is not None:
         clingcon_command.append("--time={}".format(args.t/1000))
 
-    with Popen(["fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
+    with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
         with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
