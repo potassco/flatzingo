@@ -109,7 +109,7 @@ def main():
         clingcon_command.append("--time={}".format(args.t/1000))
 
     #with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
-    with Popen(["../fzn2lp/target/release/fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
+    with Popen(["fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
         with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
