@@ -33,6 +33,7 @@ output_array_dim(V,I+1) :- output_array(V,I,_), not output_array(V,I+1,_).
 var(true).
 :- var(false).
 { var(BV) } :- variable_type(BV, bool).
+variable_bool(BV) :- variable_type(BV, bool).
 
 variable_int(V) :- variable_type(V, int).
 variable_int(V) :- variable_type(V, int, set, _).
@@ -665,6 +666,6 @@ in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
    in(C, 1, PB),
    not #sum {1,var(B) : in(C, 0, I, B)} != PB.
 
-&minimize {V : solve(minimize, V)}.
-&minimize {-V : solve(maximize, V)}.
+&minimize {V : solve(minimize, var, V)}.
+&minimize {-V : solve(maximize, var, V)}.
 

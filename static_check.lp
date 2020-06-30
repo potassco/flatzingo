@@ -69,12 +69,14 @@ fail(C) :- constraint(C,T), not supported_constraint(T).
 
 supported(V) :- variable_type(V,bool).
 supported(V) :- variable_type(V,int).
-supported(V) :- variable_type(V,int, set, _).
+supported(V) :- variable_type(V,int, range, _). % this is int
+supported(V) :- variable_type(V,int, set, _).   % this is int
 supported(V) :- variable_type(V,array(_,int)).
 supported(V) :- variable_type(V,array(_,bool)).
 
 fail(Type,V) :- variable_type(V,Type), not supported(V).
 fail(Type,V) :- variable_type(V,Type,_), not supported(V).
+fail(Type,V) :- variable_type(V,Type,_,_), not supported(V).
 
 fail(C,T) :- constraint(C,T), constraint_type(T,I,value),
              constraint_value(C,I,array,_).
@@ -95,7 +97,7 @@ fail(C,T) :- constraint(C,T), constraint_type(T,I,set),
 #show fail/2.
 
 numVar(bool,X) :- X = #sum {1,V : variable_type(V,bool)}.
-numVar(int,X) :- X = #sum {1,V : variable_type(V,int); 1,V : variable_type(V,int_in_range(_,_)); 1,V : variable_type(V, int_in_set(_))}.
+numVar(int,X) :- X = #sum {1,V : variable_type(V,int); 1,V : variable_type(V,int, range,_); 1,V : variable_type(V,int, set,_)}.
 numConstraint(T,X) :- constraint(_,T), X = #sum {1,C : constraint(C,T)}.
 
 #show numVar/2.

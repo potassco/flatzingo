@@ -14,8 +14,8 @@
 
 # Using the same image as for the MiniZinc Challenge
 FROM ubuntu:18.04 AS builder
-ENV PATH="/root/miniconda3/bin:${PATH}"
-ARG PATH="/root/miniconda3/bin:${PATH}"
+ENV PATH="/install/bin:${PATH}"
+ARG PATH="/install/bin:${PATH}"
 
 # Updating & installing necessary packages
 RUN apt-get update -y && apt-get install -y \
@@ -24,44 +24,35 @@ RUN apt-get update -y && apt-get install -y \
     cmake \
     flex \
     git \
-    curl
+    curl \
+    re2c
 
-RUN \
-    echo "#!/bin/bash                                                 " >  clingcon_install.sh && \
-    echo "#----------------------------------------------------------#" >> clingcon_install.sh && \
-    echo "echo \"# Script for compiling clingcon\"                    " >> clingcon_install.sh && \
-    echo "#----------------------------------------------------------#" >> clingcon_install.sh && \
-    echo "curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" >> clingcon_install.sh && \
-    echo "chmod +x ./Miniconda3-latest-Linux-x86_64.sh" >> clingcon_install.sh && \
-    echo "./Miniconda3-latest-Linux-x86_64.sh -b" >> clingcon_install.sh && \
-    echo "echo \"# installed miniconda\"                    " >> clingcon_install.sh && \
-    echo "conda init bash" >> clingcon_install.sh && \
-    echo "echo \"# conda init bash called\"                    " >> clingcon_install.sh && \
-    echo "source ~/.bashrc" >> clingcon_install.sh && \
-    echo "conda create -n clingcon -c potassco/label/dev -c conda-forge clingo ninja cmake gxx_linux-64 libcxx clang-tools" >> clingcon_install.sh && \
-    echo "echo \"# created environment\"                    " >> clingcon_install.sh && \
-#    echo "conda activate clingcon" clingcon_install.sh && \
-#    echo "echo \"# activates environment\"                    " >> clingcon_install.sh && \
-    echo "git clone https://github.com/potassco/clingcon.git" >> clingcon_install.sh && \
-    echo "cd clingcon" >> clingcon_install.sh && \
-    echo "conda run -n clingcon cmake -G Ninja -H. -B"build" -DCMAKE_BUILD_TYPE=Release -DCLINGCON_BUILD_TESTS=On -DCMAKE_EXPORT_COMPILE_COMMANDS=On -DCLINGCON_BUILD_STATIC=On" >> clingcon_install.sh && \
-    echo "conda run -n clingcon cmake --build build --target all" >> clingcon_install.sh && \
-    echo "echo \"called make\" " >> clingcon_install.sh && \
-    echo "tree . " >> clingcon_install.sh && \
-    echo "./build/bin/clingcon --version" >> clingcon_install.sh && \
-    echo "cd .." >> clingcon_install.sh && \
-    chmod a+x /clingcon_install.sh && \
-    ./clingcon_install.sh
+RUN git clone https://github.com/potassco/clingo.git && \
+    cd clingo && \
+    git checkout wip && \
+    git submodule update --init --recursive && \
+    cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install -DCLINGO_BUILD_WITH_PYTHON=Off && \
+    cmake --build build --target install -- -j4 && \
+    ldd /install/bin/clingo && \
+    clingo -v
+
+RUN git clone https://github.com/potassco/clingcon.git && \
+    cd clingcon && \
+    git checkout wip && \
+    git submodule update --init --recursive && \
+    cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/install -DClingo_DIR=/install && \
+    cmake --build build --target install -- -j4 && \
+    ldd /install/bin/clingcon && \
+    clingcon -v
 
 RUN curl https://sh.rustup.rs | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 # bad idea to use meow and also to use update ?
 RUN git clone https://github.com/sthiele/fzn2lp.git && \
     cd fzn2lp && \
-    git checkout meow && \
     cargo update && \ 
     cargo build --release && \
-    cd ..
+    cp target/release/fzn2lp /install/bin/
 
 RUN git clone https://github.com/sthiele/flatzingo.git
 
@@ -71,14 +62,13 @@ RUN git clone https://github.com/sthiele/flatzingo.git
 # Using the MiniZinc Challenge docker image
 FROM minizinc/mznc2020
 
+ENV PATH="/install/bin:${PATH}"
+
 # Installing python for wrapper script
-RUN echo "hello" && apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:deadsnakes/ppa && apt-get update -y && apt-get install -y python3.8
+RUN apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:deadsnakes/ppa && apt-get install -y python3.8
 
 # Copy clingcon's executable from the previous stage across
-COPY --from=builder /clingcon/build/bin/clingcon /entry_data/clingcon
-
-# Copy fzn2lp's executable from the previous stage across
-COPY --from=builder /fzn2lp/target/release/fzn2lp /entry_data/
+COPY --from=builder /install /install
 
 # Copy flatzingo's executable from the previous stage across
 COPY --from=builder /flatzingo/*.lp /entry_data/
@@ -88,3 +78,4 @@ RUN chmod a+x /entry_data/fzn-exec
 
 # Copy flatzingo's MiniZinc library from the previous stage across
 COPY --from=builder /flatzingo/share/minizinc/flatzingo/* /entry_data/mzn-lib/
+
