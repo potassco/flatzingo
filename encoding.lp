@@ -1,4 +1,3 @@
-#include "types.lp".
 %%%values
 in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
              constraint_value(C,I,value,V).

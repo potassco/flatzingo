@@ -63,7 +63,6 @@ supported_constraint("pb_le").
 supported_constraint("pb_eq").
 supported_constraint("pb_ne").
 
-#include "types.lp".
 
 fail(C) :- constraint(C,T), not supported_constraint(T).
 
