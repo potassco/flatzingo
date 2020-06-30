@@ -25,6 +25,10 @@ in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,set,(range,(L,U))).
 
+%%% output
+
+output_array_dim(V,I+1) :- output_array(V,I,_), not output_array(V,I+1,_).
+
 %%% variable types
 var(true).
 :- var(false).

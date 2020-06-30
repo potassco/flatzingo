@@ -2,7 +2,61 @@ import argparse
 from subprocess import *
 import sys
 import os
+import re
 
+class Solution:
+    def __init__(self):
+        self.clear()
+        self.array_comp = re.compile("variable_value\((.*),array,\((.*),var,(.*)\)\)")
+
+    def clear(self):
+        self.atoms  = set()
+        self.output_vars = []
+        self.output_array_dim = {}
+        self.output_array = {} # array name to content map ID->name
+        self.variables = {}
+
+    def readAnswer(self, line):
+        self.clear()
+        for word in line.split(' '):
+            if word.startswith("output_var"):
+                self.output_vars.append(word[len("output_var("):-1])
+            elif word.startswith("output_array_dim"):
+                word = word[len("output_array_dim("):-1]
+                t = word.rpartition(',')
+                self.output_array_dim[t[0]] = t[2]
+            else:
+                x = self.array_comp.match(word)
+                if x is not None:
+                    self.output_array.setdefault(x.group(1),{})[x.group(2)] = x.group(3)
+                else:              
+                    self.atoms.add(word)
+    
+    def readAssignment(self, line):
+        for word in line.split(' '):
+            t = word.rpartition('=')
+            self.variables[t[0]] = t[2]
+
+    def printSolution(self):
+        for v in self.output_vars:
+            if v in self.variables:
+                print("{} = {};".format(v.strip('"'),self.variables[v]))
+            elif v in self.atoms:
+                print("{} = true;".format(v.strip('"')))
+            else:
+                print("{} = false;".format(v.strip('"')))
+        for (array,dim) in self.output_array_dim.items():
+            if array not in self.output_array:
+                raise Exception("Output array not defined")
+            x = [var for (index,var) in sorted(self.output_array[array].items())]
+            for var in x:
+                if var not in self.variables:
+                    raise Exception("Output variable {} not found".format(var))
+            x = [self.variables[var] for var in x]
+            print("{} = array{}d({});".format(array.strip('"'),dim,",".join(x)))
+            
+        print("----------")
+        sys.stdout.flush()
 
 def main():
     parser = argparse.ArgumentParser(description='Solve CP Problems using clingcon.')
@@ -35,7 +89,8 @@ def main():
     if args.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    clingcon_command = [os.path.join(sys.path[0],"clingcon"), "encoding.lp", "-"]
+    #clingcon_command = [os.path.join(sys.path[0],"clingcon"), "encoding.lp", "-"]
+    clingcon_command = ["clingcon", "encoding.lp", "-"]
     num_models = 1
     if args.a:
         num_models = 0
@@ -53,20 +108,23 @@ def main():
     if args.t is not None:
         clingcon_command.append("--time={}".format(args.t/1000))
 
-    with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
+    #with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
+    with Popen(["../fzn2lp/target/release/fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
         with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
             complete = False
+            sol = Solution()
             for line in clingcon.stdout:
                 if answer:
                     # also check for bool output vars
+                    sol.readAnswer(line)
                     answer = False
                 elif assignment:
                     # TODO: for array output annotations we need the annotations and we need to parse the solution and reconvert it
+                    sol.readAssignment(line)
                     assignment = False
-                    print("----------")
-                    sys.stdout.flush()
+                    sol.printSolution()
                 elif "UNSATISFIABLE" in line:
                     print("=====UNSATISFIABLE=====")
                     sys.stdout.flush()
@@ -77,8 +135,8 @@ def main():
                     answer = True
                 elif "Assignment:" in line:
                     assignment = True
-                print(line, end='') # debug
-                sys.stdout.flush()
+                #print(line, end='') # debug
+                #sys.stdout.flush()
             if complete:
                 print("==========")
                 sys.stdout.flush()
