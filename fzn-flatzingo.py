@@ -90,7 +90,7 @@ def main():
         raise Exception("Option -n is not allowed on optimization problems")
 
     #clingcon_command = [os.path.join(sys.path[0],"clingcon"), "encoding.lp", "-"]
-    clingcon_command = ["clingcon", "encoding.lp", "-"]
+    clingcon_command = ["clingcon", os.path.join(sys.path[0],"encoding.lp"), "-"]
     num_models = 1
     if args.a:
         num_models = 0
