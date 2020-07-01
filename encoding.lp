@@ -64,13 +64,13 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 :- constraint(C, "int_eq_reif"),
    in(C, 0, X),
    in(C, 1, Y),
-   in(C, 1, BV), 
+   in(C, 2, BV), 
    &sum { X } = Y,
    not var(BV).
 :- constraint(C, "int_eq_reif"),
    in(C, 0, X),
    in(C, 1, Y),
-   in(C, 1, BV), 
+   in(C, 2, BV), 
    not &sum { X } = Y,
    var(BV).
 
@@ -84,13 +84,13 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 :- constraint(C, "int_le_reif"),
    in(C, 0, X),
    in(C, 1, Y),
-   in(C, 1, BV), 
+   in(C, 2, BV), 
    &sum { X } <= Y,
    not var(BV).
 :- constraint(C, "int_le_reif"),
    in(C, 0, X),
    in(C, 1, Y),
-   in(C, 1, BV), 
+   in(C, 2, BV), 
    not &sum { X } <= Y,
    var(BV).
 
@@ -601,9 +601,6 @@ var(B):- constraint(C, "bool_lt"),
 %% flatzingo_fixed_disjunctive
 &disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive").
 
-
-in(C,I,int(X)) :- in_constraint(C,I,set_of_int(X)).
-in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 %% set_in
 &dom{X : in(C, 1, X); L..U : in(C, 1, L, U)} = V :- constraint(C, "set_in"),
    in(C, 0, V).
