@@ -38,7 +38,6 @@ class Solution:
             self.variables[t[0]] = t[2].rstrip()
 
     def printSolution(self):
-        print("VARIABLES: {}".format(self.variables))
         for v in self.output_vars:
             if v in self.variables:
                 print("{} = {};".format(v.strip('"'),self.variables[v]))
