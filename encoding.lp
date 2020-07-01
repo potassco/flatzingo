@@ -17,12 +17,14 @@ in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
 %%%sets
 in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
                constraint_value(C,I,set,(value,V)).
+in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+               constraint_value(C,I,set,(var,V)).
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
-               constraint_value(C,I,set,(range,(L,U))). % set of variables not needed yet
+               constraint_value(C,I,range,(value,L,value,U)). % set of variables not needed yet
 in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,set,(value,V)).
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
-               constraint_value(C,I,var,X), parameter_value(X,set,(range,(L,U))).
+               constraint_value(C,I,var,X), parameter_value(X,range,(value,L,value,U)).
 
 %%% output
 
@@ -36,7 +38,8 @@ variable_bool(BV) :- variable_type(BV, bool).
 
 variable_int(V) :- variable_type(V, int).
 variable_int(V) :- variable_type(V, int, set, _).
-&dom {L..U : variable_type(V, int, set, (range,(L,U))); X : variable_type(V, int, set, (value, X))} = V :- variable_int(V).
+variable_int(V) :- variable_type(V, int, range, _).
+&dom {L..U : variable_type(V, int, range,(value, L, value, U)); X : variable_type(V, int, set, (value, X))} = V :- variable_int(V).
 
 
 %%% variable assignments
