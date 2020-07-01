@@ -266,7 +266,7 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 %% array_bool_and
 :- constraint(C, "array_bool_and"),
    in(C, 1, B),
-   var(BV) : in(C, 0, I, BV),
+   var(BV) : in(C, 0, I, BV);
    not var(B).
 :- constraint(C, "array_bool_and"),
    in(C, 1, B),
@@ -280,7 +280,7 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
    not var(B).
 :- constraint(C, "array_bool_or"),
    in(C, 1, B),
-   not var(BV) : in(C, 0, I, BV),
+   not var(BV) : in(C, 0, I, BV);
    var(B).
 
 %% bool2int
@@ -494,7 +494,7 @@ var(B):- constraint(C, "bool_lt"),
 :- constraint(C, "bool_clause_reif"),
    in(C, 2, B), 
    not var(BV) : in(C, 0, I, BV);
-   var(BV) : in(C, 1, I, BV),
+   var(BV) : in(C, 1, I, BV);
    var(B).
 :- constraint(C, "bool_clause_reif"),
    in(C, 2, B), 
@@ -545,7 +545,7 @@ var(B):- constraint(C, "bool_lt"),
 :- constraint(C, "bool_clause_imp"),
    in(C, 2, B), 
    not var(BV) : in(C, 0, I, BV);
-   var(BV) : in(C, 1, I, BV),
+   var(BV) : in(C, 1, I, BV);
    var(B).
 
 %% int_max
