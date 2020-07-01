@@ -26,10 +26,6 @@ in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
 in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,range,(value,L,value,U)).
 
-%%% output
-
-output_array_dim(V,I+1) :- output_array(V,I,_), not output_array(V,I+1,_).
-
 %%% variable types
 var(true).
 :- var(false).
@@ -105,15 +101,11 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 
 %% int_lin_eq_reif
 :- constraint(C, "int_lin_eq_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
    not var(BV).
 :- constraint(C, "int_lin_eq_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } = RHS,
@@ -121,23 +113,17 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 
 %% int_lin_le
 :- constraint(C, "int_lin_le"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS.
 
 
 %% int_lin_le_reif
 :- constraint(C, "int_lin_le_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS,
    not var(BV).
 :- constraint(C, "int_lin_le_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } <= RHS,
@@ -145,22 +131,16 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 
 %% int_lin_ne
 :- constraint(C, "int_lin_ne"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } != RHS.
 
 %% int_lin_ne_reif
 :- constraint(C, "int_lin_ne_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    &sum { A*V : in(C,0,I,A), in(C,1,I,V) } != RHS,
    not var(BV).
 :- constraint(C, "int_lin_ne_reif"),
-   in(C, 0, array), % safety check
-   in(C, 1, array), % safety check
    in(C, 2, RHS),
    in(C, 3, BV),
    not &sum { A*V : in(C,0,I,A), in(C,1,I,V) } != RHS,
@@ -400,17 +380,17 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
 %% bool_lin_eq
 :- constraint(C, "bool_lin_eq"),
    in(C, 2, RHS), 
-   not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} = RHS.
+   not #sum {W,BV,I : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} = RHS.
 
 %% bool_lin_ne
 :- constraint(C, "bool_lin_ne"),
    in(C, 2, RHS), 
-   not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} != RHS.
+   not #sum {W,BV,I : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} != RHS.
 
 %% bool_lin_le
 :- constraint(C, "bool_lin_le"),
    in(C, 2, RHS), 
-   not #sum {W,BV : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} <= RHS.
+   not #sum {W,BV,I : var(BV), in(C, 0, I, W), in(C, 1, I, BV)} <= RHS.
 
 %% bool_lt
 :- constraint(C, "bool_lt"),
@@ -654,19 +634,19 @@ in(C,I,range(L,U)) :- in_constraint(C,I,set_int_range(L,U)).
 %% pb_ge
 :- constraint(C, "pb_ge"),
    in(C, 1, PB),
-   not #sum {1,var(B) : in(C, 0, I, B)} >= PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB.
 %% pb_le
 :- constraint(C, "pb_le"),
    in(C, 1, PB),
-   not #sum {1,var(B) : in(C, 0, I, B)} <= PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB.
 %% pb_eq
 :- constraint(C, "pb_eq"),
    in(C, 1, PB),
-   not #sum {1,var(B) : in(C, 0, I, B)} = PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} = PB.
 %% pb_ne
 :- constraint(C, "pb_ne"),
    in(C, 1, PB),
-   not #sum {1,var(B) : in(C, 0, I, B)} != PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} != PB.
 
 &minimize {V : solve(minimize, var, V)}.
 &minimize {-V : solve(maximize, var, V)}.

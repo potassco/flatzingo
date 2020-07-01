@@ -8,6 +8,7 @@ class Solution:
     def __init__(self):
         self.clear()
         self.array_comp = re.compile("variable_value\((.*),array,\((.*),var,(.*)\)\)")
+        self.array_dim = re.compile("output_array\((.*),(.*),\((.*),(.*)\)\)")
 
     def clear(self):
         self.atoms  = set()
@@ -21,10 +22,12 @@ class Solution:
         for word in line.split(' '):
             if word.startswith("output_var"):
                 self.output_vars.append(word[len("output_var("):-1])
-            elif word.startswith("output_array_dim"):
-                word = word[len("output_array_dim("):-1]
-                t = word.rpartition(',')
-                self.output_array_dim[t[0]] = t[2]
+            elif word.startswith("output_array("):
+                x = self.array_dim.match(word)
+                if x is not None:
+                    self.output_array_dim.setdefault(x.group(1),{})[x.group(2)] = "{}..{}".format(x.group(3),x.group(4))
+                else:
+                    raise Exception("Malformed output array")
             else:
                 x = self.array_comp.match(word)
                 if x is not None:
@@ -53,7 +56,8 @@ class Solution:
                 if var not in self.variables:
                     raise Exception("Output variable {} not found".format(var))
             x = [self.variables[var] for var in x]
-            print("{} = array{}d({});".format(array.strip('"'),dim,",".join(x)))
+            dimensions = [b for (a,b) in sorted(dim.items())]
+            print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
         print("----------")
         sys.stdout.flush()
