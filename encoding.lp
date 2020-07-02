@@ -577,23 +577,22 @@ var(B):- constraint(C, "bool_lt"),
    not &sum{A} = X.
 
 %% array_int_maximum
+array_int_maximum_has_value(C) :- constraint(C, "array_int_maximum"),
+   in(C, 0, M),
+   &sum {M} = A, in(C, 1, I, A).
+:- constraint(C, "array_int_maximum"), not array_int_maximum_has_value(C).
 :- constraint(C, "array_int_maximum"),
    in(C, 0, M),
-   &sum {M} = A, in(C, 1, I, A),
-   &sum {M} > B, in(C, 1, I, B), A != B.
-
-1 { bool_array_int_maximum(C,V) : in(C, 1, I, V) } 1:- constraint(C, "array_int_maximum").
-:- bool_array_int_maximum(C,V), in(C, 0, M), not &sum{M} = V.
+   &sum {M} < A, in(C, 1, I, A).
 
 %% array_int_minimum
+array_int_minimum_has_value(C) :- constraint(C, "array_int_minimum"),
+   in(C, 0, M),
+   &sum {M} = A, in(C, 1, I, A).
+:- constraint(C, "array_int_minimum"), not array_int_minimum_has_value(C).
 :- constraint(C, "array_int_minimum"),
    in(C, 0, M),
-   &sum {M} = A, in(C, 1, I, A),
-   &sum {M} < B, in(C, 1, I, B), A != B.
-
-1 { bool_array_int_minimum(C,V) : in(C, 1, I, V) } 1:- constraint(C, "array_int_minimum").
-:- bool_array_int_minimum(C,V), in(C, 0, M), not &sum{M} = V.
-
+   &sum {M} > A, in(C, 1, I, A).
 
 %% all_different_int
 &distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int").
