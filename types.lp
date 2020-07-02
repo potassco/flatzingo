@@ -219,3 +219,5 @@ constraint_type("pb_eq",1,value).
 
 constraint_type("pb_ne",0,array).
 constraint_type("pb_ne",1,value).
+
+constraint_type("all_different_int",0,array).
