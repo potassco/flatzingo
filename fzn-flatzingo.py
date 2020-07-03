@@ -123,6 +123,7 @@ def main():
                        help='Walltime in ms.')
     parser.add_argument('flatzinc', 
                        help="Problem file in flatzinc format.")
+    parser.add_argument('solverargs', nargs='*')
     args = parser.parse_args()
     
     global optimization
@@ -152,6 +153,10 @@ def main():
         clingcon_command.append("--seed={}".format(args.r))
     if args.t is not None:
         clingcon_command.append("--time={}".format(int(args.t/1000)))
+
+
+    forward = ["--{}".format(x) for x in args.solverargs]
+    clingcon_command += forward
 
     #with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
     with Popen(["fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
