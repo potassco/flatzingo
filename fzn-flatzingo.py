@@ -48,7 +48,7 @@ def readStat(line):
 class Solution:
     def __init__(self):
         self.clear()
-        self.array_comp = re.compile("variable_value\((.*),array,\((.*),var,(.*)\)\)")
+        self.array_comp = re.compile("variable_value\((.*),array,\((.*),(?:var|value),(.*)\)\)")
         self.array_dim = re.compile("output_array\((.*),(.*),\((.*),(.*)\)\)")
 
     def clear(self):
@@ -91,12 +91,9 @@ class Solution:
                 print("{} = false;".format(v.strip('"')))
         for (array,dim) in self.output_array_dim.items():
             if array not in self.output_array:
-                raise Exception("Output array not defined")
+                raise Exception("Output array {} not defined".format(array))
             x = [var for (index,var) in sorted(self.output_array[array].items())]
-            for var in x:
-                if var not in self.variables:
-                    raise Exception("Output variable {} not found".format(var))
-            x = [self.variables[var] for var in x]
+            x = [self.variables[var] if var in self.variables else var for var in x]
             dimensions = [b for (a,b) in sorted(dim.items())]
             print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
