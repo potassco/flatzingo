@@ -9,10 +9,10 @@ optimization = False
 stats = {}
 stats["time"]            = re.compile("^Time\s*:\s(.*)")
 stats["choices"]         = re.compile("^Choices\s*:\s(.*)$")
-stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+)$")
+stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+).*")
 stats["rules"]           = re.compile("^Rules\s*:\s(.*)$")
-stats["boolVariables"]   = re.compile("^Variables\s*:\s(\d+)$")
-stats["nogoods"]         = re.compile("^Constraints\s*:\s(\d+)$")
+stats["boolVariables"]   = re.compile("^Variables\s*:\s(\d+).*")
+stats["nogoods"]         = re.compile("^Constraints\s*:\s(\d+).*")
 
 stats["init_total"]      = re.compile("^\s{4}Total\s*:\s(.*)$")
 stats["init_simplify"]   = re.compile("^\s{4}Simplify\s*:\s(.*)$")
