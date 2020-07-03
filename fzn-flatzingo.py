@@ -4,6 +4,47 @@ import sys
 import os
 import re
 
+optimization = False
+
+stats = {}
+stats["time"]            = re.compile("^Time\s*:\s(.*)")
+stats["choices"]         = re.compile("^Choices\s*:\s(.*)$")
+stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+)$")
+stats["rules"]           = re.compile("^Rules\s*:\s(.*)$")
+stats["boolVariables"]   = re.compile("^Variables\s*:\s(\d+)$")
+stats["nogoods"]         = re.compile("^Constraints\s*:\s(\d+)$")
+
+stats["init_total"]      = re.compile("^\s{4}Total\s*:\s(.*)$")
+stats["init_simplify"]   = re.compile("^\s{4}Simplify\s*:\s(.*)$")
+stats["init_translate"]  = re.compile("^\s{4}Translate\s*:\s(.*)$")
+
+stats["csp_constraints"] = re.compile("^\s{4}Constraints\s*:\s(.*)$")
+stats["intVariables"]    = re.compile("^\s{4}Variables\s*:\s(.*)$")
+stats["csp_clauses"]     = re.compile("^\s{4}Clauses\s*:\s(.*)$")
+stats["csp_literals"]    = re.compile("^\s{4}Literals\s*:\s(.*)$")
+
+stats["csp_time_total"] = re.compile("^\s{6}Time\s*:\s(.*)$")
+stats["csp_time_propagation"] = re.compile("^\s{6}Propagation\s*:\s(.*)$")
+stats["csp_time_check"] = re.compile("^\s{6}Check\s*:\s(.*)$")
+stats["csp_time_undo"] = re.compile("^\s{6}Undo\s*:\s(.*)$")
+
+stats["csp_refined_reason"] = re.compile("^\s{4}Refined reason\s*:\s(.*)$")
+stats["csp_introduced_reason"] = re.compile("^\s{4}Introduced reason\s*:\s(.*)$")
+stats["csp_literals_introduced"] = re.compile("^\s{4}Literals introduced\s*:\s(.*)$")
+
+stats["objective"] = re.compile("^Cost:\s*(.*)$")
+
+
+
+
+def readStat(line):
+    for (name,r) in stats.items():
+        x = r.match(line)
+        if x is not None:
+            print("%%%mzn-stat: {}={}".format(name,x.group(1)))
+            if optimization and name=="objective":
+                print("----------")
+
 class Solution:
     def __init__(self):
         self.clear()
@@ -59,8 +100,10 @@ class Solution:
             dimensions = [b for (a,b) in sorted(dim.items())]
             print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
-        print("----------")
+        if not optimization:
+            print("----------")
         sys.stdout.flush()
+
 
 def main():
     parser = argparse.ArgumentParser(description='Solve CP Problems using clingcon.')
@@ -85,7 +128,8 @@ def main():
                        help="Problem file in flatzinc format.")
     args = parser.parse_args()
     
-    optimization = False
+    global optimization
+
     with open(args.flatzinc) as inputfile:
         for line in inputfile:
             if "maximize" in line or "minimize" in line:
@@ -118,9 +162,12 @@ def main():
             answer = False
             assignment = False
             complete = False
+            stats = False
             sol = Solution()
             for line in clingcon.stdout:
-                if answer:
+                if stats:
+                    readStat(line)
+                elif answer:
                     # also check for bool output vars
                     sol.readAnswer(line)
                     answer = False
@@ -139,6 +186,11 @@ def main():
                     answer = True
                 elif "Assignment:" in line:
                     assignment = True
+                elif line.startswith("Time"):
+                    readStat(line)
+                    stats = True
+                elif line.startswith("Cost:"):
+                    readStat(line)
                 #print(line, end='') # debug
                 #sys.stdout.flush()
             if complete:
