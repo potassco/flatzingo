@@ -103,6 +103,14 @@ class Solution:
 
 
 def main():
+    argum = []
+    for i in sys.argv:
+        if i == "--":
+            break
+        argum.append(i)
+    solverargs = []
+    if len(argum) < len(sys.argv):
+        solverargs = sys.argv[len(argum)+1:]
     parser = argparse.ArgumentParser(description='Solve CP Problems using clingcon.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-a', action='store_true', 
@@ -123,43 +131,38 @@ def main():
                        help='Walltime in ms.')
     parser.add_argument('flatzinc', 
                        help="Problem file in flatzinc format.")
-    parser.add_argument('solverargs', nargs='*')
-    args = parser.parse_args()
+    parsed = parser.parse_args(argum[1:])
     
     global optimization
 
-    with open(args.flatzinc) as inputfile:
+    with open(parsed.flatzinc) as inputfile:
         for line in inputfile:
             if "maximize" in line or "minimize" in line:
                 optimization = True
-    if args.n is not None and optimization:
+    if parsed.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    #clingcon_command = [os.path.join(sys.path[0],"clingcon"), "encoding.lp", "-"]
     clingcon_command = ["clingcon", os.path.join(sys.path[0],"encoding.lp"), os.path.join(sys.path[0],"types.lp"), "-"]
     num_models = 1
-    if args.a:
+    if parsed.a:
         num_models = 0
     if optimization:
         num_models = 0
-    if args.n is not None:
-        num_models = args.n
+    if parsed.n is not None:
+        num_models = parsed.n
     clingcon_command.append(str(num_models))
-    if args.s:
+    if parsed.s:
         clingcon_command.append("--stats=2")
-    if args.p is not None:
-        clingcon_command.append("-t{}".format(args.p))
-    if args.r is not None:
-        clingcon_command.append("--seed={}".format(args.r))
-    if args.t is not None:
-        clingcon_command.append("--time={}".format(int(args.t/1000)))
+    if parsed.p is not None:
+        clingcon_command.append("-t{}".format(parsed.p))
+    if parsed.r is not None:
+        clingcon_command.append("--seed={}".format(parsed.r))
+    if parsed.t is not None:
+        clingcon_command.append("--time={}".format(int(parsed.t/1000)))
 
+    clingcon_command += solverargs
 
-    forward = ["--{}".format(x) for x in args.solverargs]
-    clingcon_command += forward
-
-    #with Popen([os.path.join(sys.path[0],"fzn2lp"), args.flatzinc], stdout=PIPE) as fzn2lp:
-    with Popen(["fzn2lp", args.flatzinc], stdout=PIPE) as fzn2lp:
+    with Popen(["fzn2lp", parsed.flatzinc], stdout=PIPE) as fzn2lp:
         with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
@@ -174,7 +177,6 @@ def main():
                     sol.readAnswer(line)
                     answer = False
                 elif assignment:
-                    # TODO: for array output annotations we need the annotations and we need to parse the solution and reconvert it
                     sol.readAssignment(line)
                     assignment = False
                     sol.printSolution()
@@ -193,8 +195,6 @@ def main():
                     stats = True
                 elif line.startswith("Cost:"):
                     readStat(line)
-                #print(line, end='') # debug
-                #sys.stdout.flush()
             if complete:
                 print("==========")
                 sys.stdout.flush()
