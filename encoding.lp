@@ -598,7 +598,9 @@ array_int_minimum_has_value(C) :- constraint(C, "array_int_minimum"),
 &distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int").
    
 %% flatzingo_fixed_disjunctive
-&disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive").
+tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
+&sum{tempvar(C,I)} = V-1 :- tempvar(C,I,V).
+&disjoint {V@D : in(C, 0, I, V), in(C, 1, I, D), not tempvar(C,I,V+1); tempvar(C,I)@D : tempvar(C,I,V), in(C, 1, I, D)} :- constraint(C, "flatzingo_fixed_disjunctive").
 
 %% set_in
 &dom{X : in(C, 1, X); L..U : in(C, 1, L, U)} = V :- constraint(C, "set_in"),
