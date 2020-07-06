@@ -32,16 +32,16 @@ stats["csp_refined_reason"] = re.compile("^\s{4}Refined reason\s*:\s(.*)$")
 stats["csp_introduced_reason"] = re.compile("^\s{4}Introduced reason\s*:\s(.*)$")
 stats["csp_literals_introduced"] = re.compile("^\s{4}Literals introduced\s*:\s(.*)$")
 
-stats["objective"] = re.compile("^Cost:\s*(.*)$")
-
-
-
+stats["objective"] = re.compile("(?:^Cost:\s*(.*)$|^Optimization:\s*(.*)$)")
 
 def readStat(line):
     for (name,r) in stats.items():
         x = r.match(line)
         if x is not None:
-            print("%%%mzn-stat: {}={}".format(name,x.group(1)))
+            if x.group(1) is not None:
+                print("%%%mzn-stat: {}={}".format(name,x.group(1)))
+            elif x.group(2) is not None:
+                print("%%%mzn-stat: {}={}".format(name,x.group(2)))
             if optimization and name=="objective":
                 print("----------")
 
@@ -193,7 +193,7 @@ def main():
                 elif line.startswith("Time"):
                     readStat(line)
                     stats = True
-                elif line.startswith("Cost:"):
+                elif line.startswith("Cost:") or line.startswith("Optimization:"):
                     readStat(line)
             if complete:
                 print("==========")
