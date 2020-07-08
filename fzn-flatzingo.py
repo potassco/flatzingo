@@ -160,7 +160,7 @@ def main():
     if parsed.t is not None:
         clingcon_command.append("--time={}".format(int(parsed.t/1000)))
 
-    clingcon_command += solverargs
+    clingcon_command += solverargs + ["--translate-opt", "--fast-exit"]
 
     with Popen(["fzn2lp", parsed.flatzinc], stdout=PIPE) as fzn2lp:
         with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
