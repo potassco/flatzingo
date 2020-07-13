@@ -50,7 +50,6 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 # bad idea to use meow and also to use update ?
 RUN git clone https://github.com/potassco/fzn2lp.git && \
     cd fzn2lp && \
-    cargo update && \ 
     cargo build --release && \
     cp target/release/fzn2lp /install/bin/
 
