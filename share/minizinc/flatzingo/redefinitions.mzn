@@ -18,6 +18,7 @@ predicate bool_le_imp(var bool: p, var bool: q, var bool: r);
 predicate pb_ge(array[int] of var bool: x, int: v);
 predicate pb_le(array[int] of var bool: x, int: v);
 predicate pb_eq(array[int] of var bool: x, int: v);
+predicate pb_eq_imp(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_ne(array[int] of var bool: x, int: v);
 
 %%% Big thanks to Gleb Belov for this translation

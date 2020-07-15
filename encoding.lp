@@ -646,6 +646,13 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    in(C, 1, PB),
    not #sum {1,B,I : var(B), in(C, 0, I, B)} != PB.
 
+%% pb_eq_imp
+:- constraint(C, "pb_eq"),
+   in(C, 1, PB),
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} = PB,
+   in(C, 2, BV),
+   var(BV).
+
 &minimize {V : solve(minimize, var, V)}.
 &minimize {-V : solve(maximize, var, V)}.
 
