@@ -656,5 +656,4 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
 &minimize {V : solve(minimize, var, V)}.
 &minimize {-V : solve(maximize, var, V)}.
 
-
 #show var/1.
