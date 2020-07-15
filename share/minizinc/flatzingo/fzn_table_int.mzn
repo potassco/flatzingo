@@ -16,6 +16,6 @@ predicate fzn_table_int(array[int] of var int: x, array[int, int] of int: t) =
         forall(j in index_set(x)) (
             set_in(x[j], {t[i,j] | i in index_set_1of2(t)})
         ) /\
-        bool_clause([], [b[i] | i in lt..ut]);
+        pb_eq(b,1);
 
 %-----------------------------------------------------------------------------%
