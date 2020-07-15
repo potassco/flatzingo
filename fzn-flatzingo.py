@@ -3,6 +3,7 @@ from subprocess import *
 import sys
 import os
 import re
+import tempfile
 
 optimization = False
 
@@ -50,31 +51,34 @@ class Solution:
         self.clear()
         self.array_comp = re.compile("variable_value\((.*),array,\((.*),(?:var|value),(.*)\)\)")
         self.array_dim = re.compile("output_array\((.*),(.*),\((.*),(.*)\)\)")
-
-    def clear(self):
-        self.atoms  = set()
         self.output_vars = []
         self.output_array_dim = {}
         self.output_array = {} # array name to content map ID->name
+
+    def clear(self):
+        self.atoms  = set()
         self.variables = {}
 
+    def readInstance(self, word):
+        if word.startswith("output_var"):
+            self.output_vars.append(word[len("output_var("):-3])
+        elif word.startswith("output_array("):
+            x = self.array_dim.match(word)
+            if x is not None:
+                self.output_array_dim.setdefault(x.group(1),{})[x.group(2)] = "{}..{}".format(x.group(3),x.group(4))
+            else:
+                raise Exception("Malformed output array")
+        else:
+            x = self.array_comp.match(word)
+            if x is not None:
+                self.output_array.setdefault(x.group(1),{})[x.group(2)] = x.group(3)
+
+
+        
     def readAnswer(self, line):
         self.clear()
         for word in line.split(' '):
-            if word.startswith("output_var"):
-                self.output_vars.append(word[len("output_var("):-1])
-            elif word.startswith("output_array("):
-                x = self.array_dim.match(word)
-                if x is not None:
-                    self.output_array_dim.setdefault(x.group(1),{})[x.group(2)] = "{}..{}".format(x.group(3),x.group(4))
-                else:
-                    raise Exception("Malformed output array")
-            else:
-                x = self.array_comp.match(word)
-                if x is not None:
-                    self.output_array.setdefault(x.group(1),{})[x.group(2)] = x.group(3)
-                else:              
-                    self.atoms.add(word)
+            self.atoms.add(word)
     
     def readAssignment(self, line):
         for word in line.split(' '):
@@ -142,7 +146,7 @@ def main():
     if parsed.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    clingcon_command = ["clingcon", os.path.join(sys.path[0],"encoding.lp"), os.path.join(sys.path[0],"types.lp"), "-"]
+    clingcon_command = ["clingcon", os.path.join(sys.path[0],"encoding.lp"), os.path.join(sys.path[0],"types.lp")]
     num_models = 1
     if parsed.a:
         num_models = 0
@@ -150,6 +154,7 @@ def main():
         num_models = 0
     if parsed.n is not None:
         num_models = parsed.n
+
     clingcon_command.append(str(num_models))
     if parsed.s:
         clingcon_command.append("--stats=2")
@@ -162,13 +167,23 @@ def main():
 
     clingcon_command += solverargs + ["--translate-opt", "--fast-exit"]
 
-    with Popen(["fzn2lp", parsed.flatzinc], stdout=PIPE) as fzn2lp:
-        with Popen(clingcon_command, stdin=fzn2lp.stdout, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
+    tempf, tempname = tempfile.mkstemp(text=True)
+    test = run(["fzn2lp", parsed.flatzinc], stdout=tempf)
+    os.close(tempf)
+    
+    clingcon_command.append(tempname)
+    sol = Solution()
+    with open(tempname, mode='r') as tempf:
+        for line in tempf:
+            sol.readInstance(line)
+        
+
+    with open(tempname, mode='r') as tempf:
+        with Popen(clingcon_command, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
             complete = False
             stats = False
-            sol = Solution()
             for line in clingcon.stdout:
                 if stats:
                     readStat(line)
@@ -198,6 +213,7 @@ def main():
             if complete:
                 print("==========")
                 sys.stdout.flush()
+    os.remove(tempname)
 
 if __name__ == "__main__":
     main()
