@@ -633,6 +633,20 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
 :- constraint(C, "pb_ge"),
    in(C, 1, PB),
    not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB.
+
+%% pb_ge_reif
+:- constraint(C, "pb_ge_reif"),
+   in(C, 1, PB),
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
+   in(C, 2, BV),
+   var(BV).
+
+:- constraint(C, "pb_ge_reif"),
+   in(C, 1, PB),
+   #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
+   in(C, 2, BV),
+   not var(BV).
+
 %% pb_le
 :- constraint(C, "pb_le"),
    in(C, 1, PB),
@@ -652,6 +666,21 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    not #sum {1,B,I : var(B), in(C, 0, I, B)} = PB,
    in(C, 2, BV),
    var(BV).
+
+%% pb_eq_reif
+:- constraint(C, "pb_eq_reif"),
+   in(C, 1, PB),
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} = PB,
+   in(C, 2, BV),
+   var(BV).
+
+:- constraint(C, "pb_eq_reif"),
+   in(C, 1, PB),
+   #sum {1,B,I : var(B), in(C, 0, I, B)} = PB,
+   in(C, 2, BV),
+   not var(BV).
+
+
 
 &minimize {V : solve(minimize, var, V)}.
 &minimize {-V : solve(maximize, var, V)}.

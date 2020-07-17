@@ -211,6 +211,10 @@ constraint_type("set_in_reif",2,value).
 constraint_type("pb_ge",0,array).
 constraint_type("pb_ge",1,value).
 
+constraint_type("pb_ge_reif",0,array).
+constraint_type("pb_ge_reif",1,value).
+constraint_type("pb_ge_reif",2,value).
+
 constraint_type("pb_le",0,array).
 constraint_type("pb_le",1,value).
 
@@ -223,6 +227,10 @@ constraint_type("pb_ne",1,value).
 constraint_type("pb_eq_imp",0,array).
 constraint_type("pb_eq_imp",1,value).
 constraint_type("pb_eq_imp",2,value).
+
+constraint_type("pb_eq_reif",0,array).
+constraint_type("pb_eq_reif",1,value).
+constraint_type("pb_eq_reif",2,value).
 
 
 constraint_type("all_different_int",0,array).
