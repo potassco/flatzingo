@@ -559,7 +559,7 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 0, A),
    in(C, 1, B),
    in(C, 2, X),
-   &sum {A} < B,
+   not &sum {A} >= B,
    not &sum{B} = X.
 
 %% int_min
@@ -573,7 +573,7 @@ var(B):- constraint(C, "bool_lt"),
    in(C, 0, A),
    in(C, 1, B),
    in(C, 2, X),
-   &sum {A} < B,
+   not &sum {A} >= B,
    not &sum{A} = X.
 
 %% array_int_maximum

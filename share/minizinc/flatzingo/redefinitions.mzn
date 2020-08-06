@@ -77,11 +77,20 @@ predicate array_var_int_element(var int: i00, array[int] of var int: a,
     endif;
 
 predicate array_bool_element(var int: x, array[int] of bool: a, var bool: z) =
-    array_int_element(x, arrayXd(a, [bool2int(a[i]) | i in index_set(a)]), bool2int(z));
+    let {
+      set of int: ix = index_set(a),
+      set of int: yes = { i | i in index_set(a) where a[i]=true },
+      constraint x in { i | i in ix where a[i] in dom(z) }
+    } in
+    z <-> x in yes;
 
 predicate array_var_bool_element(var int: x, array[int] of var bool: a,
                                  var bool: z) =
-    array_var_int_element(x, arrayXd(a, [bool2int(a[i]) | i in index_set(a)]), bool2int(z));
+    let {
+      constraint x in { i | i in index_set(a) where
+        0 < card(dom(a[i]) intersect dom(z)) },
+    } in
+    z = a[x];
 
 %% translation of xor taken from https://github.com/chuffed
 predicate array_bool_xor(array[int] of var bool: bs) =
