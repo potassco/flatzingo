@@ -90,7 +90,11 @@ predicate array_var_bool_element(var int: x, array[int] of var bool: a,
       constraint x in { i | i in index_set(a) where
         0 < card(dom(a[i]) intersect dom(z)) },
     } in
-    z = a[x];
+    forall(i in dom(x))
+    (
+        (z \/ not (x=i) \/ not a[i]) /\
+        (not z \/ not (x=i) \/ a[i])
+    );
 
 %% translation of xor taken from https://github.com/chuffed
 predicate array_bool_xor(array[int] of var bool: bs) =
