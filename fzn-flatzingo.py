@@ -71,7 +71,7 @@ class Solution:
         else:
             x = self.array_comp.match(word)
             if x is not None:
-                self.output_array.setdefault(x.group(1),{})[x.group(2)] = x.group(3)
+                self.output_array.setdefault(x.group(1),{})[int(x.group(2))] = x.group(3)
 
 
         
