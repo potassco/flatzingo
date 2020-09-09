@@ -78,7 +78,7 @@ class Solution:
     def readAnswer(self, line):
         self.clear()
         for word in line.split(' '):
-            self.atoms.add(word)
+            self.atoms.add(word[4:-1])
     
     def readAssignment(self, line):
         for word in line.split(' '):
@@ -97,7 +97,7 @@ class Solution:
             if array not in self.output_array:
                 raise Exception("Output array {} not defined".format(array))
             x = [var for (index,var) in sorted(self.output_array[array].items())]
-            x = [self.variables[var] if var in self.variables else var for var in x]
+            x = [self.variables[var] if var in self.variables else ("true" if var in self.atoms else "false") for var in x]
             dimensions = [b for (a,b) in sorted(dim.items())]
             print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
