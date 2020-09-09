@@ -35,6 +35,14 @@ stats["csp_literals_introduced"] = re.compile("^\s{4}Literals introduced\s*:\s(.
 
 stats["objective"] = re.compile("(?:^Cost:\s*(.*)$|^Optimization:\s*(.*)$)")
 
+def check_constant(s):
+    s = str(s)
+    if s == "true" or s == "false":
+        return True
+    if s[0] in ('-', '+'):
+        return s[1:].isdigit()
+    return s.isdigit()
+
 def readStat(line):
     for (name,r) in stats.items():
         x = r.match(line)
@@ -97,7 +105,7 @@ class Solution:
             if array not in self.output_array:
                 raise Exception("Output array {} not defined".format(array))
             x = [var for (index,var) in sorted(self.output_array[array].items())]
-            x = [self.variables[var] if var in self.variables else ("true" if var in self.atoms else "false") for var in x]
+            x = [self.variables[var] if var in self.variables else (var if check_constant(var) else ("true" if var in self.atoms else "false")) for var in x]
             dimensions = [b for (a,b) in sorted(dim.items())]
             print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
