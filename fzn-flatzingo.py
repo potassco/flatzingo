@@ -173,7 +173,7 @@ def main():
     if parsed.t is not None:
         clingcon_command.append("--time={}".format(int(parsed.t/1000)))
 
-    clingcon_command += solverargs + ["--translate-opt", "--fast-exit"]
+    clingcon_command += solverargs + ["--fast-exit"]
 
     tempf, tempname = tempfile.mkstemp(text=True)
     test = run(["fzn2lp", parsed.flatzinc], stdout=tempf)
@@ -192,6 +192,7 @@ def main():
             assignment = False
             complete = False
             stats = False
+            unsat = False
             for line in clingcon.stdout:
                 if stats:
                     readStat(line)
@@ -204,6 +205,7 @@ def main():
                     assignment = False
                     sol.printSolution()
                 elif "UNSATISFIABLE" in line:
+                    unsat = True
                     print("=====UNSATISFIABLE=====")
                     sys.stdout.flush()
                 elif "Models" in line:
@@ -218,7 +220,7 @@ def main():
                     stats = True
                 elif line.startswith("Cost:") or line.startswith("Optimization:"):
                     readStat(line)
-            if complete:
+            if complete and not unsat:
                 print("==========")
                 sys.stdout.flush()
     os.remove(tempname)
