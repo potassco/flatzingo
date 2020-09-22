@@ -209,7 +209,7 @@ def main():
                     print("=====UNSATISFIABLE=====")
                     sys.stdout.flush()
                 elif "Models" in line:
-                    if not line.endswith("+"):
+                    if not line.rstrip().endswith("+"):
                         complete = True
                 elif "Answer:" in line:
                     answer = True
