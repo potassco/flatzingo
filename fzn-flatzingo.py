@@ -85,7 +85,7 @@ class Solution:
         
     def readAnswer(self, line):
         self.clear()
-        for word in line.split(' '):
+        for word in line.rstrip().split(' '):
             self.atoms.add(word[4:-1])
     
     def readAssignment(self, line):
