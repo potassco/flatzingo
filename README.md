@@ -6,12 +6,12 @@ Basically the following pipeline:
 
 For checking of unsupported constraints,
 ``` sh
-{minizinc -c --solver org.minizinc.mzn-fzn --output-fzn-to-stdout example.mzn | fzn2lp; cat static_check.lp types.lp }| clingcon
+{minizinc -c -G ../../../share/minizinc/flatzingo --output-fzn-to-stdout example.mzn | fzn2lp; cat static_check.lp types.lp }| clingcon
 ```
 
 computing a solution,
 ``` sh
-{minizinc -c --solver org.minizinc.mzn-fzn --output-fzn-to-stdout example.mzn | fzn2lp; cat encoding.lp types.lp }| clingcon
+{minizinc -c -G ../../../share/minizinc/flatzingo --output-fzn-to-stdout example.mzn | fzn2lp; cat encoding.lp types.lp }| clingcon
 ```
 
 Create a docker image:

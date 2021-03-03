@@ -23,6 +23,17 @@ predicate pb_eq_imp(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_eq_reif(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_ne(array[int] of var bool: x, int: v);
 
+predicate pb_ge_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
+predicate pb_le_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
+predicate pb_eq_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
+predicate pb_ne_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
+
+predicate pb_ge_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_le_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_eq_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_ne_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+
+
 %%% Big thanks to Gleb Belov for this translation
 predicate array_int_element(var int: i00, array[int] of int: a, var int: z) =
     let {

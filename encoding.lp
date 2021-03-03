@@ -680,6 +680,77 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    in(C, 2, BV),
    not var(BV).
 
+%% pb_ge_weighted
+:- constraint(C, "pb_ge_weighted"),
+   in(C, 2, PB),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+
+%% pb_le_weighted
+:- constraint(C, "pb_le_weighted"),
+   in(C, 2, PB),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+
+%% pb_eq_weighted
+:- constraint(C, "pb_eq_weighted"),
+   in(C, 2, PB),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} = PB.
+
+%% pb_ne_weighted
+:- constraint(C, "pb_ne_weighted"),
+   in(C, 2, PB),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} != PB.
+
+%% pb_ge_weighted_reif
+:- constraint(C, "pb_ge_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   var(BV),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+:- constraint(C, "pb_ge_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   not var(BV),
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+
+
+%% pb_le_weighted_reif
+:- constraint(C, "pb_le_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   var(BV),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+:- constraint(C, "pb_le_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   not var(BV),
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+
+
+%% pb_eq_weighted_reif
+:- constraint(C, "pb_eq_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   var(BV),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} = PB.
+:- constraint(C, "pb_eq_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   not var(BV),
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} = PB.
+
+
+%% pb_ne_weighted_reif
+:- constraint(C, "pb_ne_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   var(BV),
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} != PB.
+:- constraint(C, "pb_ne_weighted_reif"),
+   in(C, 2, PB),
+   in(C, 3, BV),
+   not var(BV),
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} != PB.
+
 
 
 &minimize {V : solve(minimize, var, V)}.
