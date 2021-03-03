@@ -211,6 +211,10 @@ constraint_type("set_in_reif",2,value).
 constraint_type("pb_ge",0,array).
 constraint_type("pb_ge",1,value).
 
+constraint_type("pb_ge_imp",0,array).
+constraint_type("pb_ge_imp",1,value).
+constraint_type("pb_ge_imp",2,value).
+
 constraint_type("pb_ge_reif",0,array).
 constraint_type("pb_ge_reif",1,value).
 constraint_type("pb_ge_reif",2,value).
@@ -218,11 +222,16 @@ constraint_type("pb_ge_reif",2,value).
 constraint_type("pb_le",0,array).
 constraint_type("pb_le",1,value).
 
+constraint_type("pb_le_imp",0,array).
+constraint_type("pb_le_imp",1,value).
+constraint_type("pb_le_imp",2,value).
+
+constraint_type("pb_le_reif",0,array).
+constraint_type("pb_le_reif",1,value).
+constraint_type("pb_le_reif",2,value).
+
 constraint_type("pb_eq",0,array).
 constraint_type("pb_eq",1,value).
-
-constraint_type("pb_ne",0,array).
-constraint_type("pb_ne",1,value).
 
 constraint_type("pb_eq_imp",0,array).
 constraint_type("pb_eq_imp",1,value).
@@ -231,6 +240,18 @@ constraint_type("pb_eq_imp",2,value).
 constraint_type("pb_eq_reif",0,array).
 constraint_type("pb_eq_reif",1,value).
 constraint_type("pb_eq_reif",2,value).
+
+constraint_type("pb_ne",0,array).
+constraint_type("pb_ne",1,value).
+
+constraint_type("pb_ne_imp",0,array).
+constraint_type("pb_ne_imp",1,value).
+constraint_type("pb_ne_imp",2,value).
+
+constraint_type("pb_ne_reif",0,array).
+constraint_type("pb_ne_reif",1,value).
+constraint_type("pb_ne_reif",2,value).
+
 
 constraint_type("pb_ge_weighted",0,array).
 constraint_type("pb_ge_weighted",1,array).
@@ -247,6 +268,26 @@ constraint_type("pb_eq_weighted",2,value).
 constraint_type("pb_ne_weighted",0,array).
 constraint_type("pb_ne_weighted",1,array).
 constraint_type("pb_ne_weighted",2,value).
+
+constraint_type("pb_ge_weighted_imp",0,array).
+constraint_type("pb_ge_weighted_imp",1,array).
+constraint_type("pb_ge_weighted_imp",2,value).
+constraint_type("pb_ge_weighted_imp",3,value).
+
+constraint_type("pb_le_weighted_imp",0,array).
+constraint_type("pb_le_weighted_imp",1,array).
+constraint_type("pb_le_weighted_imp",2,value).
+constraint_type("pb_le_weighted_imp",3,value).
+
+constraint_type("pb_eq_weighted_imp",0,array).
+constraint_type("pb_eq_weighted_imp",1,array).
+constraint_type("pb_eq_weighted_imp",2,value).
+constraint_type("pb_eq_weighted_imp",3,value).
+
+constraint_type("pb_ne_weighted_imp",0,array).
+constraint_type("pb_ne_weighted_imp",1,array).
+constraint_type("pb_ne_weighted_imp",2,value).
+constraint_type("pb_ne_weighted_imp",3,value).
 
 constraint_type("pb_ge_weighted_reif",0,array).
 constraint_type("pb_ge_weighted_reif",1,array).

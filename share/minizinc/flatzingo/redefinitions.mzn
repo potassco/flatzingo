@@ -16,12 +16,17 @@ predicate bool_le_imp(var bool: p, var bool: q, var bool: r);
 
 %% pb constraints
 predicate pb_ge(array[int] of var bool: x, int: v);
+predicate pb_ge_imp(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_ge_reif(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_le(array[int] of var bool: x, int: v);
+predicate pb_le_imp(array[int] of var bool: x, int: v, var bool: b);
+predicate pb_le_reif(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_eq(array[int] of var bool: x, int: v);
 predicate pb_eq_imp(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_eq_reif(array[int] of var bool: x, int: v, var bool: b);
 predicate pb_ne(array[int] of var bool: x, int: v);
+predicate pb_ne_imp(array[int] of var bool: x, int: v, var bool: b);
+predicate pb_ne_reif(array[int] of var bool: x, int: v, var bool: b);
 
 predicate pb_ge_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
 predicate pb_le_weighted(array[int] of var bool: x, array[int] of int: w, int: v);
@@ -32,6 +37,11 @@ predicate pb_ge_weighted_reif(array[int] of var bool: x, array[int] of int: w, i
 predicate pb_le_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
 predicate pb_eq_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
 predicate pb_ne_weighted_reif(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+
+predicate pb_ge_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_le_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_eq_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
+predicate pb_ne_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
 
 
 %%% Big thanks to Gleb Belov for this translation
