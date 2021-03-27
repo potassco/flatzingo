@@ -29,11 +29,11 @@ cp share/minizinc/flatzingo/* /Applications/MiniZincIDE.app/Contents/Resources/s
 
 ## Usage
 
-Run MiniZinc (Without solving `-c`) to get a FlatZinc output (`--output-fzn-to-stdout`) from a MiniZinc model (in this case `example.mzn`). Additionally the path to the high-level constraints (moved during the installation) must be specified with the `-G` option.
+Run MiniZinc (Without solving `-c`) to get a FlatZinc output (`--output-fzn-to-stdout`) from a MiniZinc model (in this case `encodings/example.mzn`). Additionally the path to the high-level constraints (moved during the installation) must be specified with the `-G` option.
 The output is then piped to `fzn2lp`
 
 ```
-minizinc  -G -c flatzingo --output-fzn-to-stdout example.mzn | fzn2lp > tmp.lp
+minizinc  -G -c flatzingo --output-fzn-to-stdout encodings/example.mzn | fzn2lp > tmp.lp
 ```
 
 Use the `lp` file obtained in a `clingcon` call with other encodings. 
@@ -55,7 +55,7 @@ clingcon encodings/encoding.lp encodings/types.lp tmp.lp
 
 The full process can be pied a single command:
 ```
-{minizinc -c -G flatzingo --output-fzn-to-stdout example.mzn | fzn2lp; cat encodings/encoding.lp encodings/types.lp }| clingcon
+{minizinc -c -G flatzingo --output-fzn-to-stdout encodings/example.mzn | fzn2lp; cat encodings/encoding.lp encodings/types.lp }| clingcon
 ```
 
 ## Set up for MiniZinc competition with docker
@@ -98,20 +98,34 @@ To use the same docker container again instead of creating a new one use:
 docker start -i $CONTAINER_ID
 ```
 
+When working on a docker container the files need to be accessed and edited in the terminal. However we can also create a connection between a local path and a path on the container to edit the files locally and see the changes on the container and the other way around.
+
+General command
+```
+docker run -v '$ABSOLUTE_LOCAL_PATH':'$ABSOLUTE_DOCKER_PATH' -it flatzingo:1.0 bash
+```
+
+Link the encodings directory.
+```
+docker run -v '$PATH_TO_FLATZINGO/encodings':'/entry_data/encodings' -it flatzingo:1.0 bash
+```
+Now there is a connection between the encoding directories. 
 
 ### Run flatzingo in the docker image
 
 We can run the commands from the Usage section inside a docker container. However, in this case the files with the predicates are located in `/entry_data/mzn-lib` so MiniZinc will run with
 
 ```
-minizinc -c -G ../../../../entry_data/mzn-lib --output-fzn-to-stdout /minizinc/test.mzn /minizinc/2.dzn | fzn2lp > /lp_file.lp
+minizinc -c -G ../../../../entry_data/mzn-lib --output-fzn-to-stdout /minizinc/test.mzn /minizinc/2.dzn | fzn2lp > /entry_data/encodings/lp_file.lp
 ```
 
-Note also that the `example.mzn` file is no longer available so we use the model in `/minizinc/test.mzn`  and instance `/minizinc/2.dzn` provided inside the docker by MiniZinc
+
+Note also that the `encodings/example.mzn` file is no longer available so we use the model in `/minizinc/test.mzn`  and instance `/minizinc/2.dzn` provided inside the docker by MiniZinc.
+If the container is started using the `-v` option then you will have the output file also locally.
 
 Solve with `clingcon` using the output of the previous command
 ```
-clingcon /lp_file.lp /entry_data/encodings/encoding.lp /entry_data/encodings/types.lp
+clingcon /entry_data/encodings/lp_file.lp /entry_data/encodings/encoding.lp /entry_data/encodings/types.lp
 ```
 
 Expected answer should have this after the warnings.
