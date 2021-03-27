@@ -48,14 +48,14 @@ clingcon static_check.lp types.lp tmp.lp
 - **Compute solution with `clingcon`**
 
 ```
-clingcon encoding.lp types.lp tmp.lp
+clingcon encodings/encoding.lp encodings/types.lp tmp.lp
 ```
 
 ### Single command
 
 The full process can be pied a single command:
 ```
-{minizinc -c -G flatzingo --output-fzn-to-stdout example.mzn | fzn2lp; cat encoding.lp types.lp }| clingcon
+{minizinc -c -G flatzingo --output-fzn-to-stdout example.mzn | fzn2lp; cat encodings/encoding.lp encodings/types.lp }| clingcon
 ```
 
 ## Set up for MiniZinc competition with docker
@@ -111,7 +111,7 @@ Note also that the `example.mzn` file is no longer available so we use the model
 
 Solve with `clingcon` using the output of the previous command
 ```
-clingcon /lp_file.lp /entry_data/encoding.lp /entry_data/types.lp
+clingcon /lp_file.lp /entry_data/encodings/encoding.lp /entry_data/encodings/types.lp
 ```
 
 Expected answer should have this after the warnings.

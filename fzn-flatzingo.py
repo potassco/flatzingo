@@ -154,7 +154,7 @@ def main():
     if parsed.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    clingcon_command = ["clingcon", os.path.join(sys.path[0],"encoding.lp"), os.path.join(sys.path[0],"types.lp")]
+    clingcon_command = ["clingcon", os.path.join(sys.path[0],"/encodings/encoding.lp"), os.path.join(sys.path[0],"encodings/types.lp")]
     num_models = 1
     if parsed.a:
         num_models = 0
