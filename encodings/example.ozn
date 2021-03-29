@@ -1,5 +1,0 @@
-output ["job_task_start = ",show(job_task_start),"\n","t_end = ",show(t_end),"\n"];
-set of int: jobs = 1..10;
-set of int: tasks = 1..10;
-array [jobs,tasks] of int: job_task_start;
-int: t_end;
