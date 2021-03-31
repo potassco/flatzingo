@@ -29,6 +29,14 @@ Follow the steps in the last [section](install-using-a-docker-image). *Note that
 minizinc --solver flatzingo examples/example.mzn
 ```
 
+You can also manually create and solve the `fzn` file using
+
+```
+minizinc --solver flatzingo -c --output-fzn-to-stdout examples/example.mzn > out.fzn
+./fzn-flatzingo.sh out.fzn
+
+```
+
 ## Set up for MiniZinc competition with docker
 
 ### Install using a docker image
