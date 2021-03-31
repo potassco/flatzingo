@@ -25,7 +25,9 @@ Follow the steps in the last [section](install-using-a-docker-image). *Note that
 
 ## Usage
 
+```
 minizinc --solver flatzingo examples/example.mzn
+```
 
 ## Set up for MiniZinc competition with docker
 
@@ -88,7 +90,14 @@ We can run the commands from the Usage section inside a docker container. Howeve
 
 
 ```
-minizinc --solver flatzingo /minizinc/test.mzn /minizinc/2.dzn
+minizinc -c -G ../../../../entry_data/mzn-lib --output-fzn-to-stdout /minizinc/test.mzn /minizinc/2.dzn > /entry_data/outputs/out.fzn
+```
+
+*If the container is started using the `-v` option then you will have the output file also locally.*
+
+Solve using the script (renamed to `fzn-exec`)
+```
+/entry_data/fzn-exec /entry_data/outputs/out.fzn
 ```
 
 Expected answer should have this after the warnings.
