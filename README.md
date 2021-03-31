@@ -3,8 +3,11 @@
 A [FlatZinc](https://www.minizinc.org/doc-2.4.3/en/flattening.html) frontend to solve CP problems in [MiniZinc](https://www.minizinc.org) format using [clingcon](https://potassco.org/clingcon/) as solver.
 
 The process is done in two stages:
-1. Transform files from MiniZinc into a `flatzingo` specific FlatZinc representation as an `lp` files.
-2. With the encodings in files [encoding](encoding.lp) and [types](types.lp), the `lp` file is proceeded to use the constraints with the syntax of `clingcon`.
+1. Use `MiniZinc` to transform files from `MiniZinc` `*.mzn` into a `flatzingo` specific `FlatZinc` representation as `*.fzn` files.
+2. The `FlatZinc` file can then be solved using the [fzn-flatzingo](fzn-flatzingo.sh) script.
+   We use `fzn2lp` to convert the `fzn` file to an ASP input `lp` file.
+   In combination with the encodings in files [encoding](encoding.lp) and [types](types.lp) a solution to the problem is produced in form of answer sets using the answer set solver `clingcon`.
+   Finally, the script converts these answer sets into valid `FlatZinc` output, which can then be further processed in the `MiniZinc` toolchain if needed.
 
 
 ## Install
@@ -16,67 +19,13 @@ Follow the steps in the last [section](install-using-a-docker-image). *Note that
 ### Manual Installation
 
 1. Install MiniZinc as showed [here](https://www.minizinc.org/doc-2.5.5/en/installation.html)
-2. MiniZinc requires the [files](share/minizinc/flatzingo) defining the high-level constraints used by flatzingo, to be on a relative path to the installation of MiniZinc. So they have to be copied to these directory. Given the MiniZinc path added during the instalation `$PATH_MINIZINC` copy the files with: 
-```
-cp share/minizinc/flatzingo/* $PATH_MINIZIC/share/minizinc/flatzingo
-```
-Example in MacOS
-```
-cp share/minizinc/flatzingo/* /Applications/MiniZincIDE.app/Contents/Resources/share/minizinc/flatzingo
-```
-3. [Install fzn2lp](https://github.com/potassco/fzn2lp) manually using `cargo`
-4. [Install clingcon](https://github.com/potassco/clingcon) 
+2. [Install fzn2lp](https://github.com/potassco/fzn2lp) manually using `cargo`
+3. [Install clingcon](https://github.com/potassco/clingcon) 
+4. Run `install.sh` to copy the solver configuration and redefinition files into ~/.minizinc/ (currently only Linux and Mac)
 
 ## Usage
 
-Run MiniZinc (Without solving `-c`) to get a FlatZinc output (`--output-fzn-to-stdout`) from a MiniZinc model (in this case `encodings/example.mzn`). Additionally the path to the high-level constraints (moved during the installation) must be specified with the `-G` option.
-The output is then piped to `fzn2lp`
-
-```
-minizinc  -G -c flatzingo --output-fzn-to-stdout examples/example.mzn | fzn2lp > outputs/out.lp
-```
-
-Use the `lp` file obtained in a `clingcon` call with other encodings. 
-
-- **Static check**
-  
-Check the problem before converting it to clingcon's syntax
-```
-
-clingcon encodings/static_check.lp encodings/types.lp outputs/out.lp
-```
-
-- **Compute solution with `clingcon`**
-
-```
-clingcon encodings/encoding.lp encodings/types.lp outputs/out.lp
-```
-
-### Single command
-
-The full process can be pied a single command:
-```
-{minizinc -c -G flatzingo --output-fzn-to-stdout examples/example.mzn | fzn2lp; cat encodings/encoding.lp encodings/types.lp }| clingcon
-```
-
-### Usage with scripts
-
-The python file [fzn-flatzingo.py](fzn-flatzingo.py) provides the previous functionalities for a given input in FlatZinc format. Additionally the output is parsed into minizinc format. In commands we use the example model provided by MiniZinc competition which is composed of two files [test.mzn](examples/test.mzn) and [2.dzn](examples/2.dzn).
-
-1. Convert the minizinc files to FlatZinc format providing also the special flatzingo predicates.
-```
-minizinc  -G -c flatzingo --output-fzn-to-stdout examples/test.mzn examples/2.dzn > outputs/out.fzn
-```
-2. Run the python file with the output.
-```
-python fzn-flatzingo.py outputs/out.fzn
-```
-
-Expected answer must contain the following MiniZinc answer after the warnings:
-```
-x = 2;
-----------
-```
+minizinc --solver flatzingo examples/example.mzn
 
 ## Set up for MiniZinc competition with docker
 
@@ -139,14 +88,7 @@ We can run the commands from the Usage section inside a docker container. Howeve
 
 
 ```
-minizinc -c -G ../../../../entry_data/mzn-lib --output-fzn-to-stdout /minizinc/test.mzn /minizinc/2.dzn > /entry_data/outputs/out.fzn
-```
-
-*If the container is started using the `-v` option then you will have the output file also locally.*
-
-Solve using the script (renamed to `fzn-exec`)
-```
-/entry_data/fzn-exec /entry_data/outputs/out.fzn
+minizinc --solver flatzingo /minizinc/test.mzn /minizinc/2.dzn
 ```
 
 Expected answer should have this after the warnings.

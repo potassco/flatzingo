@@ -54,11 +54,12 @@ COPY --from=builder /install /install
 
 # Copy flatzingo's executable from the previous stage across
 RUN mkdir -p /entry_data/encodings
+RUN install.sh
 COPY --from=builder /flatzingo/encodings/* /entry_data/encodings
 COPY --from=builder /flatzingo/fzn-flatzingo.py /entry_data/
 COPY --from=builder /flatzingo/fzn-flatzingo.sh /entry_data/fzn-exec
 RUN chmod a+x /entry_data/fzn-exec
 
 # Copy flatzingo's MiniZinc library from the previous stage across
-COPY --from=builder /flatzingo/share/minizinc/flatzingo/* /entry_data/mzn-lib/
+#COPY --from=builder /flatzingo/share/minizinc/flatzingo/* /entry_data/mzn-lib/
 

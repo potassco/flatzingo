@@ -1,0 +1,16 @@
+{
+  "id": "org.potassco.flatzingo",
+  "name": "Flatzingo",
+  "description": "Flatzingo FlatZinc executable",
+  "version": "1.6.0",
+  "mznlib": "../share/flatzingo",
+  "executable": "fzn-flatzingo.sh",
+  "tags": ["cp","lcg","int"],
+  "stdFlags": ["-a","-f","-n","-r","-s","-t","-v"],
+  "supportsMzn": false,
+  "supportsFzn": true,
+  "needsSolns2Out": true,
+  "needsMznExecutable": false,
+  "needsStdlibDir": false,
+  "isGUIApplication": false
+}
