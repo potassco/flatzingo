@@ -3,5 +3,5 @@
 %-----------------------------------------------------------------------------%
 
 predicate at_least_int(int: n, array[int] of var int: x, int: v) =
-    pb_ge([x[i] == v | i in index_set(x)], n);
+    pb_le([x[i] == v | i in index_set(x)], n);
 

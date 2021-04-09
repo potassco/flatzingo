@@ -3,5 +3,5 @@
 %-----------------------------------------------------------------------------%
 
 predicate at_most_int(int: n, array[int] of var int: x, int: v) =
-    pb_le([x[i] == v | i in index_set(x)], n);
+    pb_ge([x[i] == v | i in index_set(x)], n);
 

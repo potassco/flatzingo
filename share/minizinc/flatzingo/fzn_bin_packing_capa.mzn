@@ -6,7 +6,7 @@ predicate fzn_bin_packing_capa(array[int] of int: c,
       )
     /\
       forall( b in index_set(c) ) (
-            pb_le_weighted([bin[i] = b | i in index_set(bin)], [w[i] | i in index_set(bin)], c[b])
+            pb_ge_weighted([bin[i] = b | i in index_set(bin)], [w[i] | i in index_set(bin)], c[b])
       );
 
 %-----------------------------------------------------------------------------%

@@ -8,6 +8,6 @@ predicate fzn_global_cardinality_low_up(array[int] of var int: x,
 			                        array[int] of int: lbound,
                                     array[int] of int: ubound) =
      forall(i in index_set(cover)) (
-         pb_ge([x[j] = cover[i] | j in index_set(x)], lbound[i]) /\
-         pb_le([x[j] = cover[i] | j in index_set(x)], ubound[i])
+         pb_le([x[j] = cover[i] | j in index_set(x)], lbound[i]) /\
+         pb_ge([x[j] = cover[i] | j in index_set(x)], ubound[i])
      );

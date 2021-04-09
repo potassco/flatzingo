@@ -32,7 +32,7 @@ predicate fzn_cumulative_time(array[int] of var int: s,
     } in (
         forall( t in early..late ) (
             if is_fixed(b) /\ is_fixed([r[i] | i in Tasks]) then
-              pb_le_weighted([s[i] <= t /\ t < s[i] + d[i] | i in Tasks], [fix(r[i]) | i in Tasks], fix(b))
+              pb_ge_weighted([s[i] <= t /\ t < s[i] + d[i] | i in Tasks], [fix(r[i]) | i in Tasks], fix(b))
             else
               b >= sum( i in Tasks ) (
                   bool2int(s[i] <= t /\ t < s[i] + d[i]) * r[i]
@@ -50,7 +50,7 @@ predicate fzn_cumulative_task(array[int] of var int: s,
     } in (
         forall( j in Tasks ) ( 
             if is_fixed(b) /\ is_fixed([r[i] | i in Tasks]) /\ is_fixed(r[j]) then
-              pb_le_weighted([s[i] <= s[j] /\ s[j] < s[i] + d[i] | i in Tasks where i != j], [fix(r[i]) | i in Tasks where i != j], fix(b)-fix(r[j]))
+              pb_ge_weighted([s[i] <= s[j] /\ s[j] < s[i] + d[i] | i in Tasks where i != j], [fix(r[i]) | i in Tasks where i != j], fix(b)-fix(r[j]))
             else
               b >= r[j] + sum( i in Tasks where i != j ) ( 
                   bool2int(s[i] <= s[j] /\ s[j] < s[i] + d[i] ) * r[i]

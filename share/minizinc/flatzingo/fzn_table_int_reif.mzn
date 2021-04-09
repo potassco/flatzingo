@@ -9,5 +9,5 @@ predicate fzn_table_int_reif(array[int] of var int: x, array[int, int] of int: t
     constraint forall(j in index_set_1of2(t)) (
       pb_eq_reif([t[j,i]=x[i] | i in index_set(x)], length(x), b[j])
     );
-  } in pb_ge_reif(b, 1, r);
+  } in pb_le_reif(b, 1, r);
 

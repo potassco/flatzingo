@@ -8,7 +8,7 @@ predicate fzn_bin_packing_capa_reif(array[int] of int: c,
       )
     /\
       forall( assigned_bin in index_set(c) ) (
-            pb_le_weighted([bin[i] = assigned_bin | i in index_set(bin)], [w[i] | i in index_set(bin)], c[assigned_bin])
+            pb_ge_weighted([bin[i] = assigned_bin | i in index_set(bin)], [w[i] | i in index_set(bin)], c[assigned_bin])
       ));
 
 %-----------------------------------------------------------------------------%
