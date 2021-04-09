@@ -632,48 +632,48 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
 %% pb_ge
 :- constraint(C, "pb_ge"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB.
 
 %% pb_ge_imp
 :- constraint(C, "pb_ge_imp"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
    in(C, 2, BV),
    var(BV).
 
 %% pb_ge_reif
 :- constraint(C, "pb_ge_reif"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
    in(C, 2, BV),
    var(BV).
 :- constraint(C, "pb_ge_reif"),
    in(C, 1, PB),
-   #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
+   #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
    in(C, 2, BV),
    not var(BV).
 
 %% pb_le
 :- constraint(C, "pb_le"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB.
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB.
 
 %% pb_le_imp
 :- constraint(C, "pb_le_imp"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
    in(C, 2, BV),
    var(BV).
 
 %% pb_le_reif
 :- constraint(C, "pb_le_reif"),
    in(C, 1, PB),
-   not #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
+   not #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
    in(C, 2, BV),
    var(BV).
 :- constraint(C, "pb_le_reif"),
    in(C, 1, PB),
-   #sum {1,B,I : var(B), in(C, 0, I, B)} <= PB,
+   #sum {1,B,I : var(B), in(C, 0, I, B)} >= PB,
    in(C, 2, BV),
    not var(BV).
 
@@ -730,7 +730,7 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
 %% pb_ge_weighted
 :- constraint(C, "pb_ge_weighted"),
    in(C, 2, PB),
-   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
 
 %% pb_le_weighted
 :- constraint(C, "pb_le_weighted"),
@@ -752,14 +752,14 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    in(C, 2, PB),
    in(C, 3, BV),
    var(BV),
-   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
 
 %% pb_le_weighted_imp
 :- constraint(C, "pb_le_weighted_imp"),
    in(C, 2, PB),
    in(C, 3, BV),
    var(BV),
-   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
 
 %% pb_eq_weighted_imp
 :- constraint(C, "pb_eq_weighted_imp"),
@@ -781,12 +781,12 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    in(C, 2, PB),
    in(C, 3, BV),
    var(BV),
-   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
 :- constraint(C, "pb_ge_weighted_reif"),
    in(C, 2, PB),
    in(C, 3, BV),
    not var(BV),
-   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
 
 
 %% pb_le_weighted_reif
@@ -794,12 +794,12 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    in(C, 2, PB),
    in(C, 3, BV),
    var(BV),
-   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+   not #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
 :- constraint(C, "pb_le_weighted_reif"),
    in(C, 2, PB),
    in(C, 3, BV),
    not var(BV),
-   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} <= PB.
+   #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} >= PB.
 
 
 %% pb_eq_weighted_reif
