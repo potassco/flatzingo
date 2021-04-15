@@ -154,7 +154,7 @@ def main():
     if parsed.n is not None and optimization:
         raise Exception("Option -n is not allowed on optimization problems")
 
-    clingcon_command = ["clingcon", os.path.join(sys.path[0],"encodings/encoding.lp"), os.path.join(sys.path[0],"encodings/types.lp")]
+    clingcon_command = ["clingcon", os.path.join(sys.path[0], "encodings", "encoding.lp"), os.path.join(sys.path[0], "encodings", "types.lp")]
     num_models = 1
     if parsed.a:
         num_models = 0
@@ -175,18 +175,17 @@ def main():
 
     clingcon_command += solverargs + ["--fast-exit"]
 
-    tempf, tempname = tempfile.mkstemp(text=True)
-    test = run(["fzn2lp", parsed.flatzinc], stdout=tempf)
-    os.close(tempf)
+    with tempfile.TemporaryDirectory() as td:
+        tempname = os.path.join(td, 'test')
+        with open(tempname, 'wt') as tempf:
+            test = run(["fzn2lp", parsed.flatzinc], stdout=tempf)
     
-    clingcon_command.append(tempname)
-    sol = Solution()
-    with open(tempname, mode='r') as tempf:
-        for line in tempf:
-            sol.readInstance(line)
-        
+        clingcon_command.append(tempname)
+        sol = Solution()
+        with open(tempname, mode='r') as tempf:
+            for line in tempf:
+                sol.readInstance(line)
 
-    with open(tempname, mode='r') as tempf:
         with Popen(clingcon_command, bufsize=1, universal_newlines=True, stdout=PIPE) as clingcon:
             answer = False
             assignment = False
@@ -223,7 +222,6 @@ def main():
             if complete and not unsat:
                 print("==========")
                 sys.stdout.flush()
-    os.remove(tempname)
 
 if __name__ == "__main__":
     main()
