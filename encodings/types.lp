@@ -310,4 +310,4 @@ constraint_type("pb_ne_weighted_reif",2,value).
 constraint_type("pb_ne_weighted_reif",3,value).
 
 
-constraint_type("all_different_int",0,array).
+constraint_type("flatzingo_all_different_int",0,array).

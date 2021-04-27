@@ -594,8 +594,8 @@ array_int_minimum_has_value(C) :- constraint(C, "array_int_minimum"),
    in(C, 0, M),
    &sum {M} > A, in(C, 1, I, A).
 
-%% all_different_int
-&distinct {V : in(C, 0, I, V)} :- constraint(C, "all_different_int").
+%% flatzingo_all_different_int
+&distinct {V : in(C, 0, I, V)} :- constraint(C, "flatzingo_all_different_int").
    
 %% flatzingo_fixed_disjunctive
 tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
