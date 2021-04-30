@@ -34,6 +34,7 @@ jobs:
         repo: "potassco/fzn2lp"
         version: "latest"
         urlTemplate: "https://github.com/potassco/fzn2lp/releases/download/{{version}}/fzn2lp-linux-x86_64.tar.gz"
+        pathInArchive: fzn2lp
         token: ${{ secrets.GITHUB_TOKEN }}
 #
 #    - name: Checkout fzn2lp
