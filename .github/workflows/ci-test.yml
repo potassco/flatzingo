@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        clingconversion: [5.0.0]
 
     
     steps:
@@ -18,7 +19,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:potassco/stable
         sudo apt-get update
-        sudo apt-get install clingcon=5.0.0-focal1
+        sudo apt-get install clingcon=${{ clingconversion }}-focal1
     - name: Test clingcon
       run: clingcon --version
 
@@ -56,7 +57,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
-        pip3 install clingcon==5.5.0
+        pip3 install clingcon==${{ clingconversion }}
 
     - name: Test flatzingo
       run: python3 -m pytest tests
