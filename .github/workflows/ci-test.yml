@@ -14,12 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    -name: Install clingcon
+    - name: Install clingcon
       run: |
         sudo add-apt-repository ppa:potassco/stable
         sudo apt-get update && upgrade
         sudo apt-get install clingcon=5.0.0
-    -name: Test clingcon
+    - name: Test clingcon
       run: clingcon --version
 
     - name: Install minizinc
