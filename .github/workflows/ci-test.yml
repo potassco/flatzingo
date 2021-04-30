@@ -10,19 +10,17 @@ jobs:
       matrix:
         os: [ubuntu-latest]
 
+    
     steps:
     - name: Install Minizinc
-    - uses: engineerd/configurator@v0.0.6
+      uses: engineerd/configurator@v0.0.6
       with:
         name: minizinc
         url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
         pathInArchive: bin
-    steps:
     - name: Test minizinc
       run: minizinc --version
 
-    steps:
-    - uses: actions/checkout@v2
     - name: Checkout fzn2lp
       uses: actions/checkout@v2
       with:
@@ -32,4 +30,6 @@ jobs:
       run: cd fzn2lp && cargo build --release && echo "$PATH" && pwd && echo "$(pwd)/target/release" >> $GITHUB_PATH
     - name: Test fzn2lp
       run: echo "$PATH" && fzn2lp --version
+
+    - uses: actions/checkout@v2
 
