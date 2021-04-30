@@ -56,4 +56,4 @@ jobs:
       run: sudo apt-get install -y python-pytest
 
     - name: Test flatzingo
-      run: pytest tests
+      run: python3 -m pytest tests
