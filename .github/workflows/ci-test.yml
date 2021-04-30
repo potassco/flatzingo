@@ -53,7 +53,9 @@ jobs:
       run: ./install.sh
 
     - name: Install pytest
-      run: sudo apt-get install -y python-pytest
+      run: |
+        sudo apt-get install -y python3-pip
+        pip3 install pytest
 
     - name: Test flatzingo
       run: python3 -m pytest tests
