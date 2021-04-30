@@ -25,7 +25,10 @@ jobs:
         url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
         pathInArchive: MiniZincIDE-2.5.5-bundle-linux-x86_64/bin/minizinc
     - name: Test minizinc
-      run: minizinc --version
+      run: |
+        tree .
+        which minizinc
+        minizinc --version
 #
 #    - name: Checkout fzn2lp
 #      uses: actions/checkout@v2
