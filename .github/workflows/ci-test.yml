@@ -18,7 +18,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:potassco/stable
         sudo apt-get update
-        sudo apt-get install clingcon=5.0.0
+        sudo apt-get install clingcon=5.0.0-focal1
     - name: Test clingcon
       run: clingcon --version
 
