@@ -52,5 +52,8 @@ jobs:
     - name: Install flatzingo
       run: ./install.sh
 
+    - name: Install pytest
+      run: sudo apt-get install -y python-pytest
+
     - name: Test flatzingo
       run: pytest tests
