@@ -150,8 +150,8 @@ predicate int_abs(var int: x, var int: z) =
     z >= 0 /\                         % This is just for preprocessor
     z <= max([ub(x), -lb(x)]) /\      % And this
     % z <= x \/ z <= -x      %% simple
-    int_le_reif(z, x, p) /\ 
-    int_le_reif(z, -x, not p) /\
+    int_le_imp(z, x, p) /\ 
+    int_le_imp(z, -x, not p) /\
     int_le_reif(0, x, p)   % with reifs
   endif
   ;
