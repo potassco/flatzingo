@@ -13,10 +13,10 @@ jobs:
     steps:
     - name: Install Minizinc
     - uses: engineerd/configurator@v0.0.6
-        with:
-          name: minizinc
-          url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-          pathInArchive: bin
+      with:
+        name: minizinc
+        url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+        pathInArchive: bin
     steps:
     - name: Test minizinc
       run: minizinc --version
