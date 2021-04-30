@@ -13,10 +13,11 @@ jobs:
     
     steps:
      - name: Try and Error
-       run: wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-       run: tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-       run: cd MiniZincIDE-2.5.5-bundle-linux-x86_64
-       run: ./bin/minizinc --version
+       run: | 
+         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+         cd MiniZincIDE-2.5.5-bundle-linux-x86_64
+         ./bin/minizinc --version
 #    - name: Install Minizinc
 #      uses: engineerd/configurator@v0.0.6
 #      with:
