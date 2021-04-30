@@ -12,7 +12,7 @@ jobs:
 
     
     steps:
-    - name: Install Minizinc
+    - name: Install minizinc
       run: | 
         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
@@ -36,16 +36,13 @@ jobs:
         urlTemplate: "https://github.com/potassco/fzn2lp/releases/download/{{version}}/fzn2lp-linux-x86_64.tar.gz"
         pathInArchive: fzn2lp
         token: ${{ secrets.GITHUB_TOKEN }}
-#
-#    - name: Checkout fzn2lp
-#      uses: actions/checkout@v2
-#      with:
-#        repository: potassco/fzn2lp
-#        path: fzn2lp
-#    - name: Build fzn2lp
-#      run: cd fzn2lp && cargo build --release && echo "$PATH" && pwd && echo "$(pwd)/target/release" >> $GITHUB_PATH
     - name: Test fzn2lp
       run: fzn2lp --version
-#
-#    - uses: actions/checkout@v2
-#
+
+    - uses: actions/checkout@v2
+
+    - name: Install flatzingo
+      run: ./install.sh
+
+    - name: Test flatzingo
+      run: minizinc --solver flatzingo examples/test.mzn examples/2.dzn

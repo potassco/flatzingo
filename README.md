@@ -18,7 +18,7 @@ Follow the steps in the last [section](install-using-a-docker-image). *Note that
 
 ### Manual Installation
 
-1. Install MiniZinc as showed [here](https://www.minizinc.org/doc-2.5.5/en/installation.html)
+1. Install MiniZinc as shown [here](https://www.minizinc.org/doc-2.5.5/en/installation.html)
 2. [Install fzn2lp](https://github.com/potassco/fzn2lp) manually using `cargo`
 3. [Install clingcon](https://github.com/potassco/clingcon) 
 4. Run `install.sh` to copy the solver configuration and redefinition files into ~/.minizinc/ (currently only Linux and Mac)
