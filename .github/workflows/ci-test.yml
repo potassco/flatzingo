@@ -12,11 +12,11 @@ jobs:
 
     
     steps:
-     - name: Install Minizinc
-       run: | 
-         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-         echo "$(pwd)MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
+    - name: Install Minizinc
+      run: | 
+        wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+        tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+        echo "$(pwd)MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
 #    - name: Install Minizinc
 #      uses: engineerd/configurator@v0.0.6
 #      with:
