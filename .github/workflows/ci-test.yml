@@ -19,7 +19,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:potassco/stable
         sudo apt-get update
-        sudo apt-get install clingcon=${{ clingconversion }}-focal1
+        sudo apt-get install clingcon=${{ matrix.clingconversion }}-focal1
     - name: Test clingcon
       run: clingcon --version
 
@@ -57,7 +57,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
-        pip3 install clingcon==${{ clingconversion }}
+        pip3 install clingcon==${{ matrix.clingconversion }}
 
     - name: Test flatzingo
       run: python3 -m pytest tests
