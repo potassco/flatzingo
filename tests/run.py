@@ -14,7 +14,7 @@ def sols(instance, compare):
     thy.register(ctl)
     with ProgramBuilder(ctl) as bld:
         parse_files(files, lambda ast: thy.rewrite_ast(ast, bld.add))
-    
+
     ctl.ground([('base', [])])
     thy.prepare(ctl)
     models = []
