@@ -53,5 +53,4 @@ jobs:
       run: ./install.sh
 
     - name: Test flatzingo
-      run: minizinc --solver flatzingo examples/test.mzn examples/2.dzn
       run: pytest tests
