@@ -18,7 +18,7 @@ jobs:
         repository: potassco/fzn2lp
         path: fzn2lp
     - name: Build fzn2lp
-      run: cd fzn2lp && cargo build --release && echo "$PATH" && pwd && {pwd; echo "target/release"} >> $GITHUB_PATH
+      run: cd fzn2lp && cargo build --release && echo "$PATH" && pwd && echo "$(pwd)/target/release" >> $GITHUB_PATH
     - name: Test fzn2lp
       run: echo "$PATH" && fzn2lp --version
 
