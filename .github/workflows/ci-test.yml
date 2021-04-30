@@ -12,23 +12,19 @@ jobs:
 
     
     steps:
-#     - name: Try and Error
-#       run: | 
-#         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-#         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-#         cd MiniZincIDE-2.5.5-bundle-linux-x86_64
-#         ./bin/minizinc --version
-    - name: Install Minizinc
-      uses: engineerd/configurator@v0.0.6
-      with:
-        name: minizinc
-        url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-        pathInArchive: MiniZincIDE-2.5.5-bundle-linux-x86_64/bin/minizinc
+     - name: Install Minizinc
+       run: | 
+         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+         echo "$(pwd)MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
+#    - name: Install Minizinc
+#      uses: engineerd/configurator@v0.0.6
+#      with:
+#        name: minizinc
+#        url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
+#        pathInArchive: MiniZincIDE-2.5.5-bundle-linux-x86_64/bin/minizinc
     - name: Test minizinc
-      run: |
-        tree .
-        which minizinc
-        minizinc --version
+      run: minizinc --version
 #
 #    - name: Checkout fzn2lp
 #      uses: actions/checkout@v2
