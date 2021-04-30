@@ -52,10 +52,11 @@ jobs:
     - name: Install flatzingo
       run: ./install.sh
 
-    - name: Install pytest
+    - name: Install python stuff
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
+        pip3 install clingcon==5.5.0
 
     - name: Test flatzingo
       run: python3 -m pytest tests
