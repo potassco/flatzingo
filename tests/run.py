@@ -7,7 +7,7 @@ def mzn2lp(filein, fileout):
     os.system(f'minizinc -O0 -c --solver flatzingo --output-to-stdout {filein} > __temp.fzn')
     os.system(f'fzn2lp __temp.fzn > {fileout}')
 
-def sols(instance, compare):
+def sols(instance, compare, comp):
     files = [os.path.join("encodings","encoding.lp"), os.path.join("encodings","types.lp"), instance]
     thy = ClingconTheory()
     ctl = Control(['0'])
@@ -26,7 +26,7 @@ def sols(instance, compare):
 
     compare = [set(c) for c in compare]
 
-    assert len(models) == len(compare), f"{models} vs {compare}"
+    assert comp(len(models), len(compare)), f"{models}\n vs {compare}\ncomputed {len(models)} expected {len(compare)}"
     for c in compare:
         found = False
         for m in models:
@@ -34,6 +34,6 @@ def sols(instance, compare):
                 found=True
         assert found == True, f"{c} not in {models}"
 
-def check(mzn, solutions):
+def check(mzn, solutions, comp = lambda a,b: a == b):
     mzn2lp(mzn,"__temp.lp")
-    sols("__temp.lp", solutions)
+    sols("__temp.lp", solutions, comp)
