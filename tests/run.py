@@ -26,13 +26,13 @@ def sols(instance, compare):
 
     compare = [set(c) for c in compare]
 
-    assert len(models) == len(compare)
+    assert len(models) == len(compare), f"{models} vs {compare}"
     for c in compare:
         found = False
         for m in models:
             if c.issubset(m):
                 found=True
-        assert found == True
+        assert found == True, f"{c} not in {models}"
 
 def check(mzn, solutions):
     mzn2lp(mzn,"__temp.lp")
