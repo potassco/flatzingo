@@ -7,3 +7,4 @@ def test_mzn():
     check("tests/mzn/array_int_element_1.mzn", [[f"b={b+1}", f"c={c}"] for b,a,c in itertools.product(range(0,5), [[1,2,4,6,12]], range(0,14)) if a[b] == c ])
     check("tests/mzn/array_int_maximum_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] for a,b,c,d,m in itertools.product(range(0,5), range(0,14), range(-5,3), range(-8,-2), range(0,17) ) if max(a,b,c,d) == m ])
     check("tests/mzn/array_int_minimum_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] for a,b,c,d,m in itertools.product(range(0,5), range(0,14), range(-5,3), range(-8,-2), range(-10,7) ) if min(a,b,c,d) == m ])
+    check("tests/mzn/array_var_int_element_1.mzn", [[f"b={b+1}", f"a1={list(a)[0]}", f"a2={list(a)[1]}", f"a3={list(a)[2]}", f"a4={list(a)[3]}", f"a5={list(a)[4]}", f"c={c}"] for b,c in itertools.product(range(0,5), range(-5,14)) for a in itertools.product(range(0,6), range(-3,4), range(-1,7), range(3,6), range(3,6)) if list(a)[b] == c ])
