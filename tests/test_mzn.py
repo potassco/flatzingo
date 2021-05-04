@@ -11,3 +11,9 @@ def test_mzn():
     check("tests/mzn/int_abs_1.mzn", [["x=-2", "y=2"], ["x=-1", "y=1"], ["x=0", "y=0"], ["x=1", "y=1"], ["y=2", "x=2"]])
    #revisit to maybe avoid symmetries ?
     check("tests/mzn/int_div_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), itertools.chain(range(-5,0), range(1,6)), range(8)) if (a*b>0 and a//b == c) or ( a*b<=0 and (a+(-a%b))//b == c)], lambda a,b: (a > b))
+    check("tests/mzn/int_eq_1.mzn", [[f"a={a}", f"b={b}"] for a,b in itertools.product(range(-3,10), range(-5,6)) if a == b])
+    check("tests/mzn/int_eq_reif_1.mzn", [[f"a={a}", f"b={b}"] + (['var("r")'] if r else []) for a,b,r in itertools.product(range(-3,10), range(-5,6), [False, True]) if (r and a == b) or (not r and a != b)])
+    check("tests/mzn/int_le_1.mzn", [[f"a={a}", f"b={b}"] for a,b in itertools.product(range(-3,10), range(-5,6)) if a <= b])
+    check("tests/mzn/int_le_reif_1.mzn", [[f"a={a}", f"b={b}"] + (['var("r")'] if r else []) for a,b,r in itertools.product(range(-3,10), range(-5,6), [False, True]) if (r and a <= b) or (not r and a > b)])
+    check("tests/mzn/int_lin_eq_1.mzn", [[f"a={a}", f"b={b}"] for a,b in itertools.product(range(-3,10), range(-5,6)) if (3*a + 2*b) == 26])
+    check("tests/mzn/int_lin_eq_reif_1.mzn", [[f"a={a}", f"b={b}"] + (['var("r")'] if r else []) for a,b,r in itertools.product(range(-3,10), range(-5,6), [False, True]) if (r and (3*a + 2*b) == 26) or (not r and (3*a + 2*b) != 26)])
