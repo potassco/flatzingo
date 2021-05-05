@@ -3,14 +3,14 @@ import itertools
 import math
 import operator
 
+def test_mzn_slow():
+    check("tests/mzn/array_var_int_element_1.mzn", [[f"b={b+1}", f"a1={list(a)[0]}", f"a2={list(a)[1]}", f"a3={list(a)[2]}", f"a4={list(a)[3]}", f"a5={list(a)[4]}", f"c={c}"] for b,c in itertools.product(range(0,5), range(-5,14)) for a in itertools.product(range(0,6), range(-3,4), range(-1,7), range(3,6), range(3,6)) if list(a)[b] == c ])
 
-
-def test_mzn():
+def test_mzn_fast():
     check("tests/mzn/all_different_1.mzn", [[f"x={x}", f"y={y}", f"z={z}"] for x,y,z in itertools.product(range(6), range(6), range(8)) if x!=y and x!=z and y!=z ])
     check("tests/mzn/array_int_element_1.mzn", [[f"b={b+1}", f"c={c}"] for b,a,c in itertools.product(range(0,5), [[1,2,4,6,12]], range(0,14)) if a[b] == c ])
     check("tests/mzn/array_int_maximum_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] for a,b,c,d,m in itertools.product(range(0,5), range(0,14), range(-5,3), range(-8,-2), range(0,17) ) if max(a,b,c,d) == m ])
     check("tests/mzn/array_int_minimum_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] for a,b,c,d,m in itertools.product(range(0,5), range(0,14), range(-5,3), range(-8,-2), range(-10,7) ) if min(a,b,c,d) == m ])
-    check("tests/mzn/array_var_int_element_1.mzn", [[f"b={b+1}", f"a1={list(a)[0]}", f"a2={list(a)[1]}", f"a3={list(a)[2]}", f"a4={list(a)[3]}", f"a5={list(a)[4]}", f"c={c}"] for b,c in itertools.product(range(0,5), range(-5,14)) for a in itertools.product(range(0,6), range(-3,4), range(-1,7), range(3,6), range(3,6)) if list(a)[b] == c ])
     check("tests/mzn/int_abs_1.mzn", [["x=-2", "y=2"], ["x=-1", "y=1"], ["x=0", "y=0"], ["x=1", "y=1"], ["y=2", "x=2"]])
     #revisit to maybe avoid symmetries ?
     check("tests/mzn/int_div_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), itertools.chain(range(-5,0), range(1,6)), range(8)) if (a*b>0 and a//b == c) or ( a*b<=0 and (a+(-a%b))//b == c)], comp = operator.ge)
@@ -45,3 +45,6 @@ def test_mzn():
     check("tests/mzn/set_in_1.mzn", [[f"a={a}"] for a in range(-10,131) if a in [-4,3,4,5,123]])
     check("tests/mzn/set_in_reif_1.mzn", [[f"a={a}"] + (['var("r")'] if r else []) for a,r in itertools.product(range(-10,131), [False, True]) if (r and a in [-4,3,4,5,123]) or (not r and a not in [-4,3,4,5,123])])
     check("tests/mzn/set_in_imp_1.mzn", [[f"a={a}"] + (['var("r")'] if r else []) for a,r in itertools.product(range(-10,131), [False, True]) if (r and a in [-4,3,4,5,123]) or (not r)], optstr=2)
+
+
+    check("tests/mzn/array_bool_element_1.mzn", [[f"b={b}"] + (['var("c")'] if c else []) for b,c in itertools.product(range(1,10), [False, True]) if (c and b in [1,2,4,5,8,9]) or (not c and b not in [1,2,4,5,8,9])])
