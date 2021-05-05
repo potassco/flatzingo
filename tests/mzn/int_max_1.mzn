@@ -1,4 +1,5 @@
 var -3..9: a;
 var -5..5: b;
-constraint int_lin_le([3,2], [a,b], 26);
+var 0..7: c;
+constraint int_max(a,b,c);
 solve satisfy;
