@@ -1,10 +1,11 @@
 import os
+from operator import eq
 from clingo import Control
 from clingo.ast import parse_files, ProgramBuilder
 from clingcon import ClingconTheory
 
-def mzn2lp(filein, fileout):
-    os.system(f'minizinc -O0 -c --solver flatzingo --output-to-stdout {filein} > __temp.fzn')
+def mzn2lp(filein, fileout, optstr=0):
+    os.system(f'minizinc -O{optstr} -c --solver flatzingo --output-to-stdout {filein} > __temp.fzn')
     os.system(f'fzn2lp __temp.fzn > {fileout}')
 
 def sols(instance, compare, comp):
@@ -34,6 +35,7 @@ def sols(instance, compare, comp):
                 found=True
         assert found == True, f"{c} not in {models}"
 
-def check(mzn, solutions, comp = lambda a,b: a == b):
-    mzn2lp(mzn,"__temp.lp")
+
+def check(mzn, solutions, optstr=0, comp = eq):
+    mzn2lp(mzn,"__temp.lp", optstr)
     sols("__temp.lp", solutions, comp)
