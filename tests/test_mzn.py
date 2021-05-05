@@ -41,3 +41,7 @@ def test_mzn():
     check("tests/mzn/int_ne_imp_1.mzn", [[f"a={a}", f"b={b}"] + (['var("r")'] if r else []) for a,b,r in itertools.product(range(-3,10), range(-5,6), [False, True]) if (r and a != b) or (not r)])
     check("tests/mzn/int_plus_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(-10,11)) if a+b==c])
     check("tests/mzn/int_pow_1.mzn", [[f"a={a}", f"b={b}", f"c={pow(a,b)}"] for a,b in itertools.product(range(1,10), range(0,6)) if 0 <= pow(a,b) <=100])
+    check("tests/mzn/int_times_1.mzn", [[f"a={a}", f"b={b}", f"c={a*b}"] for a,b in itertools.product(range(-3,10), range(-5,6)) if -100 <= a*b <=100])
+    check("tests/mzn/set_in_1.mzn", [[f"a={a}"] for a in range(-10,131) if a in [-4,3,4,5,123]])
+    check("tests/mzn/set_in_reif_1.mzn", [[f"a={a}"] + (['var("r")'] if r else []) for a,r in itertools.product(range(-10,131), [False, True]) if (r and a in [-4,3,4,5,123]) or (not r and a not in [-4,3,4,5,123])])
+    check("tests/mzn/set_in_imp_1.mzn", [[f"a={a}"] + (['var("r")'] if r else []) for a,r in itertools.product(range(-10,131), [False, True]) if (r and a in [-4,3,4,5,123]) or (not r)], optstr=2)
