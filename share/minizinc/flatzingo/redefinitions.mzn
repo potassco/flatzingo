@@ -114,9 +114,9 @@ predicate array_var_bool_element(var int: x, array[int] of var bool: a,
     } in
     forall(i in dom(x))
     (
-        (z \/ not (x=i) \/ not a[i]) /\
-        (not z \/ not (x=i) \/ a[i])
+        bool_eq_imp(a[i],z,x=i)
     );
+
 
 %% translation of xor taken from https://github.com/chuffed
 predicate array_bool_xor(array[int] of var bool: bs) =
