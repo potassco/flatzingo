@@ -72,4 +72,20 @@ def test_mzn_fast():
     check("tests/mzn/array_var_bool_element_1.mzn", [[f"b={b}"] + toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",a5,"a5",a6,"a6",a7,"a7",a8,"a8",a9,"a9",c,"c") for b,a1,a2,a3,a4,a5,a6,a7,a8,a9,c in itertools.product(range(1,10), BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL) if eval(f'a{b}')==c ])
     # this only works for -O0 currently, minizinc bug
     check("tests/mzn/bool2int_1.mzn", [[f"b={b}"] + toBool(c,"c") for b,c in itertools.product(range(0,10), BOOL) if (c and b == 1) or (not c and b == 0)])
+    # no reif or imp possible, minizinc bug ?
     check("tests/mzn/bool_and_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a and b) or (not r and not (a and b)))])
+    check("tests/mzn/bool_clause_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",a5,"a5",a6,"a6",a7,"a7",a8,"a8",a9,"a9") for a1,a2,a3,a4,a5,a6,a7,a8,a9 in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL) if a1 or a2 or a3 or a4 or not a5 or not a6 or not a7 or not a8 or not a9 ])
+    check("tests/mzn/bool_clause_reif_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",a5,"a5",a6,"a6",a7,"a7",a8,"a8",a9,"a9",r,"r") for a1,a2,a3,a4,a5,a6,a7,a8,a9,r in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL) if r and (a1 or a2 or a3 or a4 or not a5 or not a6 or not a7 or not a8 or not a9) or (not r and not (a1 or a2 or a3 or a4 or not a5 or not a6 or not a7 or not a8 or not a9)) ])
+    # does not exist ?
+    check("tests/mzn/bool_clause_imp_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",a5,"a5",a6,"a6",a7,"a7",a8,"a8",a9,"a9",r,"r") for a1,a2,a3,a4,a5,a6,a7,a8,a9,r in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL, BOOL) if r and (a1 or a2 or a3 or a4 or not a5 or not a6 or not a7 or not a8 or not a9) or (not r) ])
+    check("tests/mzn/bool_eq_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a == b)])
+    check("tests/mzn/bool_eq_reif_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a == b) or (not r and not (a == b)))])
+    check("tests/mzn/bool_eq_imp_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a == b) or (not r))], optstr=2)
+
+    check("tests/mzn/bool_le_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a <= b)])
+    check("tests/mzn/bool_le_reif_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a <= b) or (not r and not (a <= b)))])
+    check("tests/mzn/bool_le_imp_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a <= b) or (not r))], optstr=2)
+
+    check("tests/mzn/bool_lt_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a < b)])
+    check("tests/mzn/bool_lt_reif_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r and not (a < b)))])
+    check("tests/mzn/bool_lt_imp_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r))], optstr=2)

@@ -1,0 +1,11 @@
+var bool: a1;
+var bool: a2;
+var bool: a3;
+var bool: a4;
+var bool: a5;
+var bool: a6;
+var bool: a7;
+var bool: a8;
+var bool: a9;
+constraint bool_clause([a1,a2,a3,a4],[a5,a6,a7,a8,a9]);
+solve satisfy;
