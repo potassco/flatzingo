@@ -305,10 +305,15 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
    not var(BV).
 :- constraint(C, "bool_and"),
    in(C, 0, A),
+   in(C, 2, BV),
+   not var(A),
+   var(BV).
+:- constraint(C, "bool_and"),
    in(C, 1, B),
    in(C, 2, BV),
-   not var(A), not var(B),
+   not var(B),
    var(BV).
+
 
 %% bool_clause
 :- constraint(C, "bool_clause"),
