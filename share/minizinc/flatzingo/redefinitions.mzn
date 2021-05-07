@@ -15,6 +15,7 @@ predicate bool_lt_imp(var bool: p, var bool: q, var bool: r);
 predicate bool_le_imp(var bool: p, var bool: q, var bool: r);
 predicate set_in_imp(var int: x, set of int: y, var bool: r);
 
+
 %% pb constraints
 predicate pb_ge(array[int] of var bool: x, int: v);
 predicate pb_ge_imp(array[int] of var bool: x, int: v, var bool: b);

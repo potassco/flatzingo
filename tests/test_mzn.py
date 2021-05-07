@@ -13,7 +13,15 @@ def toBool(*arg):
 BOOL = [False, True]
 
 def test_mzn_slow():
+    ### integer builtins
     check("tests/mzn/array_var_int_element_1.mzn", [[f"b={b+1}", f"a1={list(a)[0]}", f"a2={list(a)[1]}", f"a3={list(a)[2]}", f"a4={list(a)[3]}", f"a5={list(a)[4]}", f"c={c}"] for b,c in itertools.product(range(0,5), range(-5,14)) for a in itertools.product(range(0,6), range(-3,4), range(-1,7), range(3,6), range(3,6)) if list(a)[b] == c ])
+
+    check("tests/mzn/array_int_maximum_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] + toBool(r,"r") for a,b,c,d,m,r in itertools.product(range(0,5), range(0,6), range(-5,3), range(-8,-2), range(0,9), BOOL ) if (r and max(a,b,c,d) == m) or (not r and not (max(a,b,c,d) == m)) ])
+    ###TODO: recheck of own version im impl is done -> github minizinc
+    #check("tests/mzn/array_int_maximum_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] + toBool(r,"r") for a,b,c,d,m,r in itertools.product(range(0,5), range(0,6), range(-5,3), range(-8,-2), range(0,9), BOOL ) if (r and max(a,b,c,d) == m) or (not r) ])
+    check("tests/mzn/array_int_minimum_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] + toBool(r,"r") for a,b,c,d,m,r in itertools.product(range(0,5), range(0,6), range(-5,3), range(-8,-2), range(0,9), BOOL ) if (r and min(a,b,c,d) == m) or (not r and not (min(a,b,c,d) == m)) ])
+    ###TODO: recheck of own version im impl is done -> github minizinc
+    #check("tests/mzn/array_int_minimum_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}", f"d={d}", f"m={m}"] + toBool(r,"r") for a,b,c,d,m,r in itertools.product(range(0,5), range(0,6), range(-5,3), range(-8,-2), range(0,9), BOOL ) if (r and min(a,b,c,d) == m) or (not r) ])
 
 def test_mzn_fast():
     ### integer builtins
@@ -93,10 +101,15 @@ def test_mzn_fast():
     # bool_lin_le check again because of bug
     # bool_lin_eq
 
-    ### todo: check reif and impl
     check("tests/mzn/bool_not_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a != b)])
     check("tests/mzn/bool_or_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a or b) or (not r and not (a or b)))])
     check("tests/mzn/bool_xor_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a ^ b) or (not r and not (a ^ b)))])
     check("tests/mzn/bool_xor_2.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a ^ b)])
+
+
+
+    ### 2.0.0
+    #array_int_max/minimum already in std builtins
+    #array_bool_clause_reif already in std builtins
 
 
