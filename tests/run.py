@@ -25,14 +25,19 @@ def sols(instance, compare, comp):
             model += ["{}={}".format(str(key).strip('"'), val) for key, val in thy.assignment(mdl.thread_id)]
             models.append(set(model))
 
+    bool_herbrand = set([i for sl in compare for i in sl if i.startswith("var(")])
+
     compare = [set(c) for c in compare]
 
     assert comp(len(models), len(compare)), f"{models}\n vs {compare}\ncomputed {len(models)} expected {len(compare)}"
     for c in compare:
+        # for all in herbrand which are not in compare -> ensure that they are not in model
         found = False
         for m in models:
             if c.issubset(m):
-                found=True
+                if ((bool_herbrand - c) & m) == set():
+                    found=True
+                    break
         assert found == True, f"{c} not in {models}"
 
 
