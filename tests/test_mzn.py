@@ -89,3 +89,14 @@ def test_mzn_fast():
     check("tests/mzn/bool_lt_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a < b)])
     check("tests/mzn/bool_lt_reif_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r and not (a < b)))])
     check("tests/mzn/bool_lt_imp_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r))], optstr=2)
+
+    # bool_lin_le check again because of bug
+    # bool_lin_eq
+
+    ### todo: check reif and impl
+    check("tests/mzn/bool_not_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a != b)])
+    check("tests/mzn/bool_or_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a or b) or (not r and not (a or b)))])
+    check("tests/mzn/bool_xor_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a ^ b) or (not r and not (a ^ b)))])
+    check("tests/mzn/bool_xor_2.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a ^ b)])
+
+
