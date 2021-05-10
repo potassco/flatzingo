@@ -28,25 +28,14 @@ jobs:
         wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
         tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
         echo "$(pwd)/MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
-#    - name: Install Minizinc
-#      uses: engineerd/configurator@v0.0.6
-#      with:
-#        name: minizinc
-#        url: https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-#        pathInArchive: MiniZincIDE-2.5.5-bundle-linux-x86_64/bin/minizinc
     - name: Test minizinc
       run: minizinc --version
 
     - name: Install fzn2lp
-      uses: engineerd/configurator@v0.0.6
-      with:
-        name: fzn2lp
-        fromGitHubReleases: "true"
-        repo: "potassco/fzn2lp"
-        version: "latest"
-        urlTemplate: "https://github.com/potassco/fzn2lp/releases/download/{{version}}/fzn2lp-linux-x86_64.tar.gz"
-        pathInArchive: fzn2lp
-        token: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        wget https://github.com/potassco/fzn2lp/releases/download/latest/fzn2lp-linux-x86_64.tar.gz
+        tar -xvf fzn2lp-linux-x86_64.tar.gz
+        echo "$(pwd)/fzn2lp-linux-x86_64" >> $GITHUB_PATH
     - name: Test fzn2lp
       run: fzn2lp --version
 
