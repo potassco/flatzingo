@@ -35,10 +35,7 @@ jobs:
       run: |
         wget https://github.com/potassco/fzn2lp/releases/download/v0.1.3/fzn2lp-linux-x86_64.tar.gz
         tar -xvf fzn2lp-linux-x86_64.tar.gz
-        echo "$(pwd)/fzn2lp-linux-x86_64"
-        ls "$(pwd)/fzn2lp-linux-x86_64"
-        tree "$(pwd)"
-        echo "$(pwd)/fzn2lp-linux-x86_64" >> $GITHUB_PATH
+        echo "$(pwd)" >> $GITHUB_PATH
     - name: Test fzn2lp
       run: fzn2lp --version
 
