@@ -98,8 +98,25 @@ def test_mzn_fast():
     check("tests/mzn/bool_lt_reif_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r and not (a < b)))])
     check("tests/mzn/bool_lt_imp_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a < b) or (not r))], optstr=2)
 
-    # bool_lin_le check again because of bug
+    # see https://github.com/MiniZinc/libminizinc/issues/477
     # bool_lin_eq
+    check("tests/mzn/bool_lin_eq_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4") + [f"c={c}"]  for a1,a2,a3,a4,c in itertools.product(BOOL, BOOL, BOOL, BOOL, range(-10,13)) if (a1*3) + (a2*-2) + (a3*-5) + (a4*8) == c])
+    # currently only works with -O0 by accident
+    check("tests/mzn/bool_lin_eq_reif_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",r,"r") + [f"c={c}"]  for a1,a2,a3,a4,r,c in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL, range(-10,13)) if (r and (a1*3) + (a2*-2) + (a3*-5) + (a4*8) == c) or (not r and not ((a1*3) + (a2*-2) + (a3*-5) + (a4*8) == c))])
+
+   # see https://github.com/MiniZinc/libminizinc/issues/480
+   #check("tests/mzn/bool_lin_eq_imp_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",r,"r") + [f"c={c}"]  for a1,a2,a3,a4,r,c in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL, range(-10,13)) if (r and (a1*3) + (a2*-2) + (a3*-5) + (a4*8) == c) or (not r)])
+
+   # bool_lin_le
+    check("tests/mzn/bool_lin_le_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4") for a1,a2,a3,a4 in itertools.product(BOOL, BOOL, BOOL, BOOL) if (a1*3) + (a2*-2) + (a3*-5) + (a4*8) <= 10])
+    check("tests/mzn/bool_lin_le_reif_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",r,"r") for a1,a2,a3,a4,r in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL) if (r and (a1*3) + (a2*-2) + (a3*-5) + (a4*8) <= 10) or (not r and not ((a1*3) + (a2*-2) + (a3*-5) + (a4*8) <= 10))])
+   # see https://github.com/MiniZinc/libminizinc/issues/480
+#    check("tests/mzn/bool_lin_le_imp_1.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4",r,"r") for a1,a2,a3,a4,r in itertools.product(BOOL, BOOL, BOOL, BOOL, BOOL) if (r and (a1*3) + (a2*-2) + (a3*-5) + (a4*8) <= 10) or (not r)])
+
+
+
+    # TODO: check if pb constraint is created
+    check("tests/mzn/bool_lin_eq_2.mzn", [toBool(a1,"a1",a2,"a2",a3,"a3",a4,"a4") for a1,a2,a3,a4 in itertools.product(BOOL, BOOL, BOOL, BOOL) if (a1*3) + (a2*-2) + (a3*-5) + (a4*8) == 10])
 
     check("tests/mzn/bool_not_1.mzn", [toBool(a,"a",b,"b") for a,b in itertools.product(BOOL, BOOL) if (a != b)])
     check("tests/mzn/bool_or_1.mzn", [toBool(a,"a",b,"b",r,"r") for a,b,r in itertools.product(BOOL, BOOL, BOOL) if (r and (a or b) or (not r and not (a or b)))])

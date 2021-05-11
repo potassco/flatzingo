@@ -45,6 +45,37 @@ predicate pb_le_weighted_imp(array[int] of var bool: x, array[int] of int: w, in
 predicate pb_eq_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
 predicate pb_ne_weighted_imp(array[int] of var bool: x, array[int] of int: w, int: v, var bool: bb);
 
+%%% this selection of bool_lin in the standard is weird, see
+%%% https://github.com/MiniZinc/libminizinc/issues/477
+predicate bool_lin_eq(array [int] of int: as, array [int] of var bool: bs, var int: c) =
+    if is_fixed(c) then
+      pb_eq_weighted(bs, as, fix(c))
+    else
+      sum(i in index_set(as))(as[i] * bool2int(bs[i])) == c
+    endif;
+
+predicate bool_lin_eq_reif(array [int] of int: as, array [int] of var bool: bs, var int: c, bool: r) =
+    if is_fixed(c) then
+      pb_eq_weighted_reif(bs, as, fix(c), r)
+    else
+      r <-> (sum(i in index_set(as))(as[i] * bool2int(bs[i])) == c)
+    endif;
+
+predicate bool_lin_eq_imp(array [int] of int: as, array [int] of var bool: bs, var int: c, bool: r) =
+    if is_fixed(c) then
+      pb_eq_weighted_imp(bs, as, fix(c), r)
+    else
+      r -> (sum(i in index_set(as))(as[i] * bool2int(bs[i])) == c)
+    endif;
+
+predicate bool_lin_le(array [int] of int: as, array [int] of var bool: bs, int: c) =
+    pb_le_weighted(bs, as, c);
+
+predicate bool_lin_le_reif(array [int] of int: as, array [int] of var bool: bs, int: c, bool: r) =
+    pb_le_weighted_reif(bs, as, c, r);
+
+predicate bool_lin_le_imp(array [int] of int: as, array [int] of var bool: bs, int: c, bool: r) =
+    pb_le_weighted_imp(bs, as, c, r);
 
 %%% Big thanks to Gleb Belov for this translation
 predicate array_int_element(var int: i00, array[int] of int: a, var int: z) =

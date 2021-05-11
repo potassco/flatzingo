@@ -1,0 +1,7 @@
+var bool: a1;
+var bool: a2;
+var bool: a3;
+var bool: a4;
+var bool: r;
+constraint r -> bool_lin_le([3,-2,-5,8],[a1,a2,a3,a4],10);
+solve satisfy;
