@@ -130,3 +130,22 @@ def test_mzn_fast():
     #array_bool_clause_reif already in std builtins
 
 
+    ### redefined globals
+    check("tests/mzn/count_eq_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)==2 ])
+    check("tests/mzn/count_geq_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)<=2 ])
+    check("tests/mzn/count_gt_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)<2 ])
+    check("tests/mzn/count_leq_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)>=2 ])
+    check("tests/mzn/count_lt_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)>2 ])
+    check("tests/mzn/count_neq_par_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] for a,b,c in itertools.product(range(-3,10), range(-5,6), range(0,9)) if [a,b,c].count(7)!=2 ])
+    check("tests/mzn/count_eq_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)==2) or (not r and not ([a,b,c].count(7)==2)) ])
+    check("tests/mzn/count_geq_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)<=2) or (not r and not ([a,b,c].count(7)<=2)) ])
+    check("tests/mzn/count_gt_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)<2) or (not r and not ([a,b,c].count(7)<2)) ])
+    check("tests/mzn/count_leq_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)>=2) or (not r and not ([a,b,c].count(7)>=2)) ])
+    check("tests/mzn/count_lt_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)>2) or (not r and not ([a,b,c].count(7)>2)) ])
+    check("tests/mzn/count_neq_par_reif_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)!=2) or (not r and not ([a,b,c].count(7)!=2)) ])
+    check("tests/mzn/count_eq_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)==2) or (not r) ])
+    check("tests/mzn/count_geq_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)<=2) or (not r) ])
+    check("tests/mzn/count_gt_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)<2) or (not r) ])
+    check("tests/mzn/count_leq_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)>=2) or (not r) ])
+    check("tests/mzn/count_lt_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)>2) or (not r) ])
+    check("tests/mzn/count_neq_par_imp_1.mzn", [[f"a={a}", f"b={b}", f"c={c}"] + toBool(r,"r") for a,b,c,r in itertools.product(range(-3,10), range(-5,6), range(0,9), BOOL) if (r and [a,b,c].count(7)!=2) or (not r) ])
