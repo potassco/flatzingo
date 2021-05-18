@@ -51,14 +51,14 @@ jobs:
     - name: Test flatzingo
       run: python3 -m pytest tests
 
-    - name: Install minizinc python library and requirements
-      run: pip3 install -r requirements.txt
     - name: Install minizinc testcases
       uses: actions/checkout@v2
       with:
         repository: 'MiniZinc/libminizinc'
         ref: '2.5.5'
         path: 'libminizinc'
+    - name: Install minizinc python library and requirements
+      run: pip3 install -r libminizinc/tests/requirements.txt
     - name: Prepare minizinc testcases
       run: |
         cd libminizinc
