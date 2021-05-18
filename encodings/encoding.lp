@@ -4,6 +4,7 @@ in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
 in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
              constraint_value(C,I,var,V).
 
+
 %%%arrays
 in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
                 constraint_value(C,I,var,X), parameter_value(X,array,(AI,value,V)). %arrays of sets of ints not needed
@@ -833,8 +834,14 @@ tempvar(C,I,V+1) :- in(C,0,I,V), constraint(C, "flatzingo_fixed_disjunctive").
    #sum {W,B,I : var(B), in(C, 0, I, B), in(C, 1, I, W)} != PB.
 
 
+conv(minimize,1).
+conv(maximize,-1).
+opt_var(A,V) :- solve(C,var,X), parameter_value(X,value,V),
+                conv(C,A).
+opt_var(A,X) :- solve(C,var,X), not parameter_value(X,value,_),
+                conv(C,A).
+opt_var(A,V) :- solve(C,value,V), conv(C,A).
 
-&minimize {V : solve(minimize, var, V)}.
-&minimize {-V : solve(maximize, var, V)}.
+&minimize {A*V : opt_var(A,V)}.
 
 #show var/1.
