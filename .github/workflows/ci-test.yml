@@ -61,7 +61,8 @@ jobs:
       run: |
         cd libminizinc
         sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' tests/minizinc_testing/spec.py
-        cd tests
     - name: Run minizinc tests
-      run: pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
+      run: |
+        cd libminizinc/tests
+        pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
 
