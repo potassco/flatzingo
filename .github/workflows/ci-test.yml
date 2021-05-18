@@ -63,10 +63,10 @@ jobs:
       run: |
         cd libminizinc
         sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' tests/minizinc_testing/spec.py
-    - name: Run minizinc tests
-      run: |
-        cd libminizinc/tests
-        pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
+#    - name: Run minizinc tests
+#      run: |
+#        cd libminizinc/tests
+#        pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
     - name: detective
       run: minizinc --solver flatzingo libminizinc/tests/spec/unit/globals/alldifferent/globals_all_different_int.mzn
 
