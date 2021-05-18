@@ -9,7 +9,6 @@ optimization = False
 
 stats = {}
 stats["time"]            = re.compile("^Time\s*:\s(.*)s \(.*")
-stats["alltimes"]        = re.compile("^Time\s*:\s(.*)")
 stats["choices"]         = re.compile("^Choices\s*:\s(.*)$")
 stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+).*")
 stats["rules"]           = re.compile("^Rules\s*:\s(.*)$")
