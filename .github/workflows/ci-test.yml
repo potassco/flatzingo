@@ -52,8 +52,7 @@ jobs:
       run: python3 -m pytest tests
 
     - name: Install minizinc python library and requirements
-      run: pip3 install minizinc pytest-html
-
+      run: pip3 install -r requirements.txt
     - name: Install minizinc testcases
       uses: actions/checkout@v2
       with:
@@ -67,6 +66,5 @@ jobs:
     - name: Run minizinc tests
       run: |
         cd libminizinc/tests
-        pytest --version
         pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
 
