@@ -51,6 +51,9 @@ jobs:
     - name: Test flatzingo
       run: python3 -m pytest tests
 
+    - name: Install minizinc python library
+      run: pip3 install minizinc
+
     - name: Install minizinc testcases
       uses: actions/checkout@v2
       with:
