@@ -45,7 +45,7 @@ jobs:
     - name: Install python stuff
       run: |
         sudo apt-get install -y python3-pip
-        pip3 install pytest
+        pip3 install pytest cffi
         pip3 install -i https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post2
 
     - name: Test flatzingo
