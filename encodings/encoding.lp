@@ -1,30 +1,31 @@
 %%%values
-in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
+c_aux(C,T,I,Type) :- constraint(C,T), constraint_type(T,I,Type).
+in(C,I,V) :- c_aux(C,T,I,value),
              constraint_value(C,I,value,V).
-in(C,I,V) :- constraint(C,T), constraint_type(T,I,value),
+in(C,I,V) :- c_aux(C,T,I,value),
              constraint_value(C,I,var,V).
 
 
 %%%arrays
-in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+in(C,I,AI,V) :- c_aux(C,T,I,array),
                 constraint_value(C,I,var,X), parameter_value(X,array,(AI,value,V)). %arrays of sets of ints not needed
-in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+in(C,I,AI,V) :- c_aux(C,T,I,array),
                 constraint_value(C,I,var,X), variable_value(X,array,(AI,value,V)).
-in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+in(C,I,AI,V) :- c_aux(C,T,I,array),
                 constraint_value(C,I,var,X), variable_value(X,array,(AI,var,V)).
-in(C,I,AI,V) :- constraint(C,T), constraint_type(T,I,array),
+in(C,I,AI,V) :- c_aux(C,T,I,array),
                 constraint_value(C,I,array,(AI,_,V)).
 
 %%%sets
-in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+in(C,I,V)   :- c_aux(C,T,I,set),
                constraint_value(C,I,set,(value,V)).
-in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+in(C,I,V)   :- c_aux(C,T,I,set),
                constraint_value(C,I,set,(var,V)).
-in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
+in(C,I,L,U) :- c_aux(C,T,I,set),
                constraint_value(C,I,range,(value,L,value,U)). % set of variables not needed yet
-in(C,I,V)   :- constraint(C,T), constraint_type(T,I,set),
+in(C,I,V)   :- c_aux(C,T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,set,(value,V)).
-in(C,I,L,U) :- constraint(C,T), constraint_type(T,I,set),
+in(C,I,L,U) :- c_aux(C,T,I,set),
                constraint_value(C,I,var,X), parameter_value(X,range,(value,L,value,U)).
 
 %%% variable types
@@ -52,7 +53,6 @@ var(V) :- variable_bool(V), variable_value(V, value, true).
    var(V), not var(X).
 :- variable_bool(V), variable_value(V, var, X),
    not var(V), var(X).
-
 
 %%% constraints
 %% int_eq
