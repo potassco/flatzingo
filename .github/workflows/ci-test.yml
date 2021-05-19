@@ -60,9 +60,7 @@ jobs:
     - name: Install minizinc python library and requirements
       run: pip3 install -r libminizinc/tests/requirements.txt
     - name: Prepare minizinc testcases
-      run: |
-        cd libminizinc
-        sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' tests/minizinc_testing/spec.py
+      run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
     - name: Run minizinc tests
       run: |
         cd libminizinc/tests
