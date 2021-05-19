@@ -145,25 +145,12 @@ def main():
                        help="Problem file in flatzinc format.")
     parsed = parser.parse_args(argum[1:])
     
-    global optimization
-
-    with open(parsed.flatzinc) as inputfile:
-        for line in inputfile:
-            if "maximize" in line or "minimize" in line:
-                optimization = True
-    if parsed.n is not None and optimization:
-        raise Exception("Option -n is not allowed on optimization problems")
-
     clingcon_command = ["clingcon", os.path.join(sys.path[0], "encodings", "encoding.lp"), os.path.join(sys.path[0], "encodings", "types.lp")]
-    num_models = 1
     if parsed.a:
-        num_models = 0
-    if optimization:
-        num_models = 0
+        clingcon_command.append("0")
     if parsed.n is not None:
-        num_models = parsed.n
+        clingcon_command.append(str(parsed.n))
 
-    clingcon_command.append(str(num_models))
     if parsed.s:
         clingcon_command.append("--stats=2")
     if parsed.p is not None:
