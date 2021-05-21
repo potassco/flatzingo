@@ -8,6 +8,7 @@ import tempfile
 optimization = False
 
 stats = {}
+stats["models"]          = re.compile("^Models\s*:\s(.*)")
 stats["time"]            = re.compile("^Time\s*:\s(.*)s \(.*")
 stats["choices"]         = re.compile("^Choices\s*:\s(.*)$")
 stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+).*")
@@ -53,6 +54,8 @@ def readStat(line):
                 print("%%%mzn-stat: {}={}".format(name,x.group(2)))
             if optimization and name=="objective":
                 print("----------")
+            del stats[name]
+            break
 
 class Solution:
     def __init__(self):
@@ -194,16 +197,15 @@ def main():
                     unsat = True
                     print("=====UNSATISFIABLE=====")
                     sys.stdout.flush()
-                elif "Models" in line:
+                elif line.startswith("Models"):
+                    readStat(line)
+                    stats = True
                     if not line.rstrip().endswith("+"):
                         complete = True
                 elif "Answer:" in line:
                     answer = True
                 elif "Assignment:" in line:
                     assignment = True
-                elif line.startswith("Time"):
-                    readStat(line)
-                    stats = True
                 elif line.startswith("Cost:") or line.startswith("Optimization:"):
                     readStat(line)
             if complete and not unsat:
