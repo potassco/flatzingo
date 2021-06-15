@@ -51,7 +51,6 @@ RUN apt-get update -y && apt-get install software-properties-common -y && \
 # Copy fzn2lp's executable from the previous stage across
 COPY --from=builder /install /install
 
-
 # Copy flatzingo's executable from the previous stage across
 RUN mkdir -p /flatzingo/encodings
 COPY --from=builder /minizinc/flatzingo/encodings/* /flatzingo/encodings/
