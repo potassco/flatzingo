@@ -33,6 +33,9 @@ RUN git clone https://github.com/potassco/fzn2lp.git && \
     cp target/release/fzn2lp /install/bin/
 
 RUN git clone https://github.com/potassco/flatzingo.git
+RUN ls /minizinc/flatzingo
+RUN pwd
+RUN cd /minizinc/flatzingo && git status
 RUN cd /minizinc/flatzingo && git checkout temp
 
 #------------------------------------------------------------------------------#
