@@ -13,52 +13,62 @@
 # 1. Stage: Compilation of flatzingo in a Build Stage
 
 # Using the same image as for the MiniZinc Challenge
-FROM ubuntu:18.04 AS builder
+FROM minizinc/mznc2021 AS builder
 ENV PATH="/install/bin:${PATH}"
 ARG PATH="/install/bin:${PATH}"
 
 # Updating & installing necessary packages
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:potassco/wip -y && apt-get update -y && apt-get install -y \
     build-essential \
     git \
-    curl 
+    curl \
+    clingcon=5.0.1-focal4
 
 RUN curl https://sh.rustup.rs | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
-# bad idea to use meow and also to use update ?
 RUN git clone https://github.com/potassco/fzn2lp.git && \
     cd fzn2lp && \
     cargo build --release && \
     mkdir -p /install/bin && \
     cp target/release/fzn2lp /install/bin/
 
-# RUN git clone -b sh/wip https://github.com/susuhahnml/flatzingo.git 
 RUN git clone https://github.com/potassco/flatzingo.git 
+RUN git checkout temp
 
 #------------------------------------------------------------------------------#
 # 2. Stage: Setup of flatzingo in the MiniZinc Challenge docker image
 #
 # Using the MiniZinc Challenge docker image
-FROM minizinc/mznc2020
+FROM minizinc/mznc2021
 
 ENV PATH="/install/bin:${PATH}"
 
 # Installing python for wrapper script
 RUN apt-get update -y && apt-get install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa && \
-    add-apt-repository ppa:potassco/bionic-wip && \
-    apt-get install -y python3.8 clingcon
+    add-apt-repository ppa:potassco/wip && \
+    apt-get install -y python3-pip && \
+    pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==5.0.1-post3
 
 # Copy clingcon's executable from the previous stage across
 COPY --from=builder /install /install
 
+
 # Copy flatzingo's executable from the previous stage across
-RUN mkdir -p /entry_data/encodings
-COPY --from=builder /flatzingo/encodings/* /entry_data/encodings/
-COPY --from=builder /flatzingo/fzn-flatzingo.py /entry_data/
-COPY --from=builder /flatzingo/fzn-flatzingo.sh /entry_data/fzn-exec
-RUN chmod a+x /entry_data/fzn-exec
+RUN mkdir -p /flatzingo/encodings
+COPY --from=builder /minizinc/flatzingo/encodings/* /flatzingo/encodings/
+COPY --from=builder /minizinc/flatzingo/fzn-flatzingo.py /flatzingo/
+COPY --from=builder /minizinc/flatzingo/fzn-flatzingo.sh /flatzingo/fzn-flatzingo.sh
+RUN chmod a+x /flatzingo/fzn-flatzingo.sh
 
 # Copy flatzingo's MiniZinc library from the previous stage across
-COPY --from=builder /flatzingo/share/minizinc/flatzingo/* /entry_data/mzn-lib/
+COPY --from=builder /minizinc/flatzingo/share/minizinc/flatzingo/* /flatzingo/flatzingo-lib/
 
+# Copy flatzingo's configuration file
+COPY --from=builder /minizinc/flatzingo/configuration/docker.msc /flatzingo/flatzingo.msc
+
+# Make solver the default
+RUN echo '{"tagDefaults": [["", "org.potassco.flatzingo"]]}' > $HOME/.minizinc/Preferences.json
+
+# Add to MiniZinc search path
+ENV MZN_SOLVER_PATH=/flatzingo:${MZN_SOLVER_PATH}
