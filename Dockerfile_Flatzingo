@@ -18,11 +18,10 @@ ENV PATH="/install/bin:${PATH}"
 ARG PATH="/install/bin:${PATH}"
 
 # Updating & installing necessary packages
-RUN apt-get update -y && apt-get install software-properties-common -y && add-apt-repository ppa:potassco/wip -y && apt-get update -y && apt-get install -y \
+RUN apt-get update -y && apt-get install -y \
     build-essential \
     git \
-    curl \
-    clingcon=5.0.1-focal4
+    curl 
 
 RUN curl https://sh.rustup.rs | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
@@ -32,11 +31,7 @@ RUN git clone https://github.com/potassco/fzn2lp.git && \
     mkdir -p /install/bin && \
     cp target/release/fzn2lp /install/bin/
 
-RUN git clone https://github.com/potassco/flatzingo.git
-RUN ls /minizinc/flatzingo
-RUN pwd
-RUN cd /minizinc/flatzingo && git status
-RUN cd /minizinc/flatzingo && git checkout temp
+RUN git clone --branch temp https://github.com/potassco/flatzingo.git
 
 #------------------------------------------------------------------------------#
 # 2. Stage: Setup of flatzingo in the MiniZinc Challenge docker image
@@ -50,10 +45,10 @@ ENV PATH="/install/bin:${PATH}"
 RUN apt-get update -y && apt-get install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa && \
     add-apt-repository ppa:potassco/wip && \
-    apt-get install -y python3-pip && \
+    apt-get install -y python3-pip clingcon=5.0.1-focal4 && \
     pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==5.0.1-post3
 
-# Copy clingcon's executable from the previous stage across
+# Copy fzn2lp's executable from the previous stage across
 COPY --from=builder /install /install
 
 
