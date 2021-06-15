@@ -3,7 +3,7 @@
   "name": "Flatzingo",
   "description": "Flatzingo FlatZinc executable",
   "version": "1.7.0",
-  "mznlib": "../share/flatzingo",
+  "mznlib": "flatzingo-lib",
   "executable": "fzn-flatzingo.sh",
   "tags": ["cp","lcg","int"],
   "stdFlags": ["-a","-f","-n","-r","-s","-t","-v"],
