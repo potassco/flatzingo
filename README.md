@@ -14,7 +14,7 @@ The process is done in two stages:
 
 ### Using Docker
 
-Follow the steps in the last [section](install-using-a-docker-image). *Note that **Usage** will vary on the paths.*
+Follow the steps in the last [section](#install-using-a-docker-image). *Note that **Usage** will vary on the paths.*
 
 ### Manual Installation
 
