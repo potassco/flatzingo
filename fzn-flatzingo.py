@@ -5,8 +5,6 @@ import os
 import re
 import tempfile
 
-optimization = False
-
 stats = {}
 stats["models"]          = re.compile("^Models\s*:\s(.*)")
 stats["time"]            = re.compile("^Time\s*:\s(.*)s \(.*")
@@ -34,7 +32,7 @@ stats["csp_refined_reason"] = re.compile("^\s{4}Refined reason\s*:\s(.*)$")
 stats["csp_introduced_reason"] = re.compile("^\s{4}Introduced reason\s*:\s(.*)$")
 stats["csp_literals_introduced"] = re.compile("^\s{4}Literals introduced\s*:\s(.*)$")
 
-stats["objective"] = re.compile("(?:^Cost:\s*(.*)$|^Optimization:\s*(.*)$)")
+stats["objective_of_solution_before"] = re.compile("(?:^Cost:\s*(.*)$|^Optimization:\s*(.*)$)")
 
 def check_constant(s):
     s = str(s)
@@ -52,9 +50,6 @@ def readStat(line):
                 print("%%%mzn-stat: {}={}".format(name,x.group(1)))
             elif x.group(2) is not None:
                 print("%%%mzn-stat: {}={}".format(name,x.group(2)))
-            if optimization and name=="objective":
-                print("----------")
-            del stats[name]
             break
 
 class Solution:
@@ -112,8 +107,7 @@ class Solution:
             dimensions = [b for (a,b) in sorted(dim.items())]
             print("{} = array{}d({},{});".format(array.strip('"'),len(dim),",".join(dimensions),"["+",".join(x)+"]"))
             
-        if not optimization:
-            print("----------")
+        print("----------")
         sys.stdout.flush()
 
 
