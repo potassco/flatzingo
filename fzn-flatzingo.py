@@ -157,7 +157,7 @@ def main():
     if parsed.t is not None:
         clingcon_command.append("--time={}".format(int(parsed.t/1000)))
 
-    clingcon_command += solverargs + ["--fast-exit"]
+    clingcon_command += solverargs + ["--fast-exit", "--single-shot"]
 
     with tempfile.TemporaryDirectory() as td:
         tempname = os.path.join(td, 'test')
