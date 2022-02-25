@@ -4,65 +4,62 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        clingconversion: [5.0.1]
+        clingconversion: [5.1.0]
 
-    
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Install clingcon
-      run: |
-        sudo add-apt-repository ppa:potassco/wip
-        sudo apt-get update
-        sudo apt-get install clingcon=${{ matrix.clingconversion }}-focal5
-    - name: Test clingcon
-      run: clingcon --version
+      - name: Install clingcon
+        run: |
+          sudo add-apt-repository ppa:potassco/wip
+          sudo apt-get update
+          sudo apt-get install clingcon=${{ matrix.clingconversion }}-focal5
+      - name: Test clingcon
+        run: clingcon --version
 
-    - name: Install minizinc
-      run: | 
-        wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-        tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-        echo "$(pwd)/MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
-    - name: Test minizinc
-      run: minizinc --version
+      - name: Install minizinc
+        run: |
+          wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.6.0/MiniZincIDE-2.6.0-bundle-linux-x86_64.tgz
+          tar xzf MiniZincIDE-2.6.0-bundle-linux-x86_64.tgz
+          echo "$(pwd)/MiniZincIDE-2.6.0-bundle-linux-x86_64/bin" >> $GITHUB_PATH
+      - name: Test minizinc
+        run: minizinc --version
 
-    - name: Install fzn2lp
-      run: |
-        wget https://github.com/potassco/fzn2lp/releases/download/v0.1.3/fzn2lp-linux-x86_64.tar.gz
-        tar -xvf fzn2lp-linux-x86_64.tar.gz
-        echo "$(pwd)" >> $GITHUB_PATH
-    - name: Test fzn2lp
-      run: fzn2lp --version
+      - name: Install fzn2lp
+        run: |
+          wget https://github.com/potassco/fzn2lp/releases/download/v0.1.3/fzn2lp-linux-x86_64.tar.gz
+          tar -xvf fzn2lp-linux-x86_64.tar.gz
+          echo "$(pwd)" >> $GITHUB_PATH
+      - name: Test fzn2lp
+        run: fzn2lp --version
 
-    - name: Install flatzingo
-      run: ./install.sh
+      - name: Install flatzingo
+        run: ./install.sh
 
-    - name: Install python stuff
-      run: |
-        sudo apt-get install -y python3-pip
-        pip3 install pytest
-        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post5
+      - name: Install python stuff
+        run: |
+          sudo apt-get install -y python3-pip
+          pip3 install pytest
+          pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post5
 
-    - name: Test flatzingo
-      run: python3 -m pytest tests
+      - name: Test flatzingo
+        run: python3 -m pytest tests
 
-    - name: Install minizinc testcases
-      uses: actions/checkout@v2
-      with:
-        repository: 'MiniZinc/libminizinc'
-        ref: '2.5.5'
-        path: 'libminizinc'
-    - name: Install minizinc python library and requirements
-      run: pip3 install -r libminizinc/tests/requirements.txt
-    - name: Prepare minizinc testcases
-      run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
-    - name: Run minizinc tests
-      run: |
-        cd libminizinc/tests
-        pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
-
+      - name: Install minizinc testcases
+        uses: actions/checkout@v2
+        with:
+          repository: "MiniZinc/libminizinc"
+          ref: "2.6.0"
+          path: "libminizinc"
+      - name: Install minizinc python library and requirements
+        run: pip3 install -r libminizinc/tests/requirements.txt
+      - name: Prepare minizinc testcases
+        run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
+      - name: Run minizinc tests
+        run: |
+          cd libminizinc/tests
+          pytest -k "not test_var_set_element and not bug269 and not bug347" --driver=../../MiniZincIDE-2.6.0-bundle-linux-x86_64/bin
