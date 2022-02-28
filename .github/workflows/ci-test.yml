@@ -25,9 +25,9 @@ jobs:
 
     - name: Install minizinc
       run: | 
-        wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.5.5/MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-        tar xzf MiniZincIDE-2.5.5-bundle-linux-x86_64.tgz
-        echo "$(pwd)/MiniZincIDE-2.5.5-bundle-linux-x86_64/bin" >> $GITHUB_PATH
+        wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.6.0/MiniZincIDE-2.6.0-bundle-linux-x86_64.tgz
+        tar xzf MiniZincIDE-2.6.0-bundle-linux-x86_64.tgz
+        echo "$(pwd)/MiniZincIDE-2.6.0-bundle-linux-x86_64/bin" >> $GITHUB_PATH
     - name: Test minizinc
       run: minizinc --version
 
@@ -55,7 +55,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: 'MiniZinc/libminizinc'
-        ref: '2.5.5'
+        ref: '2.6.0'
         path: 'libminizinc'
     - name: Install minizinc python library and requirements
       run: pip3 install -r libminizinc/tests/requirements.txt
@@ -64,5 +64,5 @@ jobs:
     - name: Run minizinc tests
       run: |
         cd libminizinc/tests
-        pytest -k "not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-2.5.5-bundle-linux-x86_64/bin
+        pytest -k "not parse_assignments and not nonbool_constraint and not var_ann_ and not var_ann_comprehension and not var_set_bool and not var_set_float and not var_string_ and not var_string_comprehension and not output_only_fn and not float_mod_crash and not float_div_crash and not non-set-array-ti-location and not output_only_no_rhs and not quoted_id_ozn and not dzn_output_array and not test_array1d_bad_ and not assert_bad_ and not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-2.6.0-bundle-linux-x86_64/bin
 
