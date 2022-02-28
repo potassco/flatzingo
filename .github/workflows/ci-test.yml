@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        clingconversion: [5.0.1]
+        clingconversion: [5.1.0]
 
     
     steps:
