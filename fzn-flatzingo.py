@@ -143,8 +143,10 @@ def main():
     parsed = parser.parse_args(argum[1:])
     
     clingcon_command = ["clingcon", os.path.join(sys.path[0], "encodings", "encoding.lp"), os.path.join(sys.path[0], "encodings", "types.lp")]
+    completable = False
     if parsed.a:
         clingcon_command.append("0")
+        completable = True
     if parsed.n is not None:
         clingcon_command.append(str(parsed.n))
 
@@ -202,7 +204,8 @@ def main():
                     assignment = True
                 elif line.startswith("Cost:") or line.startswith("Optimization:"):
                     readStat(line)
-            if complete and not unsat:
+                    completable = True
+            if complete and not unsat and completable:
                 print("==========")
                 sys.stdout.flush()
 
