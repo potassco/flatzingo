@@ -6,11 +6,11 @@ import re
 import tempfile
 
 stats = {}
-stats["models"]          = re.compile("^Models\s*:\s(.*)")
+stats["models"]          = re.compile("^Models\s*:\s(\d*)")
 stats["time"]            = re.compile("^Time\s*:\s(.*)s \(.*")
 stats["choices"]         = re.compile("^Choices\s*:\s(.*)$")
 stats["conflicts"]       = re.compile("^Conflicts\s*:\s(\d+).*")
-stats["rules"]           = re.compile("^Rules\s*:\s(.*)$")
+stats["rules"]           = re.compile("^Rules\s*:\s(\d*)")
 stats["boolVariables"]   = re.compile("^Variables\s*:\s(\d+).*")
 stats["nogoods"]         = re.compile("^Constraints\s*:\s(\d+).*")
 
