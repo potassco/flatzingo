@@ -64,5 +64,5 @@ jobs:
     - name: Run minizinc tests
       run: |
         cd libminizinc/tests
-        pytest -k "not parse_assignments and not nonbool_constraint and not var_ann_ and not var_ann_comprehension and not var_set_bool and not var_set_float and not var_string_ and not var_string_comprehension and not output_only_fn and not float_mod_crash and not float_div_crash and not non-set-array-ti-location and not output_only_no_rhs and not quoted_id_ozn and not dzn_output_array and not test_array1d_bad_ and not assert_bad_ and not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-2.6.0-bundle-linux-x86_64/bin
+        pytest -k "not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-2.6.0-bundle-linux-x86_64/bin
 
