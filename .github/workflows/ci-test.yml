@@ -47,6 +47,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
+        pip3 install clingo==5.5.2
         pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post5
 
     - name: Test flatzingo
