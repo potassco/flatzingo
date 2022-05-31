@@ -60,8 +60,9 @@ jobs:
         ref: '${{ matrix.minizincversion }}'
         path: 'libminizinc'
     - name: Install minizinc python library and requirements
-      run: sed -i 's/develop/0.6.0/' libminizinc/tests/requirements.txt
-      run: pip3 install -r libminizinc/tests/requirements.txt
+      run: |
+        sed -i 's/develop/0.6.0/' libminizinc/tests/requirements.txt
+        pip3 install -r libminizinc/tests/requirements.txt
     - name: Prepare minizinc testcases
       run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
     - name: Run minizinc tests
