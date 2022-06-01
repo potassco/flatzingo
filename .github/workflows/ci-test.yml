@@ -18,7 +18,8 @@ jobs:
 
     - name: Install clingcon
       run: |
-        sudo add-apt-repository ppa:potassco/stable ppa:potassco/wip
+        sudo add-apt-repository ppa:potassco/stable
+        sudo add-apt-repository ppa:potassco/wip
         sudo apt-get update
         sudo apt-get install clingo=5.5.2 clingcon=${{ matrix.clingconversion }}-focal5
     - name: Test clingcon
