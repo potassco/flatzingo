@@ -47,8 +47,8 @@ ENV PATH="/install/bin:${PATH}"
 RUN apt-get update -y && apt-get install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa && \
     add-apt-repository ppa:potassco/wip && \
-    apt-get install -y python3-pip clingcon=5.1.0-focal5 && \
-    pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==5.1.0-post4
+    apt-get install -y python3-pip clingcon=5.1.0-focal6 && \
+    pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==5.1.0-post5
 
 # Copy fzn2lp's executable from the previous stage across
 COPY --from=builder /install /install
