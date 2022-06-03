@@ -10,7 +10,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         clingconversion: [5.1.0]
-        minizincversion: [2.6.1]
+        minizincversion: [2.6.3]
 
     
     steps:
@@ -18,9 +18,10 @@ jobs:
 
     - name: Install clingcon
       run: |
+        sudo add-apt-repository ppa:potassco/stable
         sudo add-apt-repository ppa:potassco/wip
         sudo apt-get update
-        sudo apt-get install clingcon=${{ matrix.clingconversion }}-focal5
+        sudo apt-get install clingcon=${{ matrix.clingconversion }}-focal6
     - name: Test clingcon
       run: clingcon --version
 
@@ -47,7 +48,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
-        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post4
+        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post5
 
     - name: Test flatzingo
       run: python3 -m pytest tests
@@ -59,7 +60,9 @@ jobs:
         ref: '${{ matrix.minizincversion }}'
         path: 'libminizinc'
     - name: Install minizinc python library and requirements
-      run: pip3 install -r libminizinc/tests/requirements.txt
+      run: |
+        sed -i 's/develop/0.6.0/' libminizinc/tests/requirements.txt
+        pip3 install -r libminizinc/tests/requirements.txt
     - name: Prepare minizinc testcases
       run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
     - name: Run minizinc tests

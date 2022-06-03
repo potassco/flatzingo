@@ -13,7 +13,7 @@
 # 1. Stage: Compilation of flatzingo in a Build Stage
 
 # Using the same image as for the MiniZinc Challenge
-FROM minizinc/mznc2021 AS builder
+FROM minizinc/mznc2022:latest AS builder
 ENV PATH="/install/bin:${PATH}"
 ARG PATH="/install/bin:${PATH}"
 
@@ -38,7 +38,7 @@ RUN git clone https://github.com/potassco/flatzingo.git
 # 2. Stage: Setup of flatzingo in the MiniZinc Challenge docker image
 #
 # Using the MiniZinc Challenge docker image
-FROM minizinc/mznc2021
+FROM minizinc/mznc2022:latest
 
 ENV PATH="/install/bin:${PATH}"
 
@@ -47,7 +47,7 @@ ENV PATH="/install/bin:${PATH}"
 RUN apt-get update -y && apt-get install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa && \
     add-apt-repository ppa:potassco/wip && \
-    apt-get install -y python3-pip clingcon=5.1.0-focal65 && \
+    apt-get install -y python3-pip clingcon=5.1.0-focal6 && \
     pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==5.1.0-post5
 
 # Copy fzn2lp's executable from the previous stage across
