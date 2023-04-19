@@ -2,7 +2,7 @@
   "id": "org.potassco.flatzingo",
   "name": "Flatzingo",
   "description": "Flatzingo FlatZinc executable",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "mznlib": "../share/flatzingo",
   "executable": "fzn-flatzingo.sh",
   "tags": ["cp","lcg","int"],
