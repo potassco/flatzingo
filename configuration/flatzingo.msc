@@ -6,7 +6,7 @@
   "mznlib": "../share/flatzingo",
   "executable": "fzn-flatzingo.sh",
   "tags": ["cp","lcg","int"],
-  "stdFlags": ["-a","-f","-n","-r","-s","-t","-v"],
+  "stdFlags": ["-a","-f","-n","-r","-s","-t","-v","-p"],
   "supportsMzn": false,
   "supportsFzn": true,
   "needsSolns2Out": true,
