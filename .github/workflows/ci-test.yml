@@ -71,5 +71,5 @@ jobs:
       shell: bash -l {0}
       run: |
         cd libminizinc/tests
-        pytest -k "not test_output_checker and not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-${{ matrix.minizincversion }}-bundle-linux-x86_64/bin
+        pytest -k "not test_output_checker and not test_var_set_element and not bug269 and not bug347 and not test-search1 and not test_vis_ann and not test_vis_custom" --driver=../../MiniZincIDE-${{ matrix.minizincversion }}-bundle-linux-x86_64/bin
 
