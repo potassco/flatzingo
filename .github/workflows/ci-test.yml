@@ -15,14 +15,17 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
 
-    - name: Install clingcon
+    - name: Conda install clingcon
+      shell: bash -l {0}
       run: |
-        sudo add-apt-repository ppa:potassco/stable
-        sudo add-apt-repository ppa:potassco/wip
-        sudo apt-get update
-        sudo apt-get install clingcon=${{ matrix.clingconversion }}-jammy4
+        conda install -c "potassco/label/dev" clingcon=${{matrix.clingconversion}}
     - name: Test clingcon
+      shell: bash -l {0}
       run: clingcon --version
 
     - name: Install minizinc
@@ -48,7 +51,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
-        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post3
+        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post4
 
     - name: Test flatzingo
       run: python3 -m pytest tests
@@ -66,6 +69,7 @@ jobs:
     - name: Prepare minizinc testcases
       run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
     - name: Run minizinc tests
+      shell: bash -l {0}
       run: |
         cd libminizinc/tests
         pytest -k "not test_output_checker and not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-${{ matrix.minizincversion }}-bundle-linux-x86_64/bin
