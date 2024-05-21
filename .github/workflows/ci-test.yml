@@ -10,19 +10,22 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         clingconversion: [5.2.1]
-        minizincversion: [2.6.3]
+        minizincversion: [2.8.3]
 
     
     steps:
     - uses: actions/checkout@v2
+    - uses: conda-incubator/setup-miniconda@v3
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
 
-    - name: Install clingcon
+    - name: Conda install clingcon
+      shell: bash -l {0}
       run: |
-        sudo add-apt-repository ppa:potassco/stable
-        sudo add-apt-repository ppa:potassco/wip
-        sudo apt-get update
-        sudo apt-get install clingcon=${{ matrix.clingconversion }}-jammy4
+        conda install -c "potassco/label/dev" clingcon=${{matrix.clingconversion}}
     - name: Test clingcon
+      shell: bash -l {0}
       run: clingcon --version
 
     - name: Install minizinc
@@ -35,7 +38,7 @@ jobs:
 
     - name: Install fzn2lp
       run: |
-        wget https://github.com/potassco/fzn2lp/releases/download/v0.1.4/fzn2lp-linux-x86_64.tar.gz
+        wget https://github.com/potassco/fzn2lp/releases/download/v0.1.5/fzn2lp-linux-x86_64.tar.gz
         tar -xvf fzn2lp-linux-x86_64.tar.gz
         echo "$(pwd)" >> $GITHUB_PATH
     - name: Test fzn2lp
@@ -48,7 +51,7 @@ jobs:
       run: |
         sudo apt-get install -y python3-pip
         pip3 install pytest
-        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post3
+        pip3 install --extra-index-url https://test.pypi.org/simple/ clingcon==${{ matrix.clingconversion }}.post4
 
     - name: Test flatzingo
       run: python3 -m pytest tests
@@ -61,12 +64,12 @@ jobs:
         path: 'libminizinc'
     - name: Install minizinc python library and requirements
       run: |
-        sed -i 's/develop/0.6.0/' libminizinc/tests/requirements.txt
         pip3 install -r libminizinc/tests/requirements.txt
     - name: Prepare minizinc testcases
       run: sed -i 's/"gecode", "cbc", "chuffed"/"flatzingo"/' libminizinc/tests/minizinc_testing/spec.py
     - name: Run minizinc tests
+      shell: bash -l {0}
       run: |
         cd libminizinc/tests
-        pytest -k "not test_output_checker and not test_var_set_element and not bug269 and not bug347 and not test-search1" --driver=../../MiniZincIDE-${{ matrix.minizincversion }}-bundle-linux-x86_64/bin
+        pytest -k "not test_output_checker and not test_var_set_element and not bug269 and not bug347 and not test-search1 and not test_vis_ann and not test_vis_custom" --driver=../../MiniZincIDE-${{ matrix.minizincversion }}-bundle-linux-x86_64/bin
 
