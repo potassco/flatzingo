@@ -35,7 +35,7 @@ jobs:
 
     - name: Install fzn2lp
       run: |
-        wget https://github.com/potassco/fzn2lp/releases/download/v0.1.4/fzn2lp-linux-x86_64.tar.gz
+        wget https://github.com/potassco/fzn2lp/releases/download/v0.1.5/fzn2lp-linux-x86_64.tar.gz
         tar -xvf fzn2lp-linux-x86_64.tar.gz
         echo "$(pwd)" >> $GITHUB_PATH
     - name: Test fzn2lp
